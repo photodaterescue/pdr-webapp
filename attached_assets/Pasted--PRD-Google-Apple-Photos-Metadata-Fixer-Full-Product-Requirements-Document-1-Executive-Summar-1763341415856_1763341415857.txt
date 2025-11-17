@@ -1,0 +1,255 @@
+🟣 PRD — Google/Apple Photos Metadata Fixer (Full Product Requirements Document)
+1. Executive Summary
+
+Product Vision:
+A simple, secure, browser-based tool that automatically fixes broken metadata and incorrect timestamps in Google Photos Takeout exports and Apple Photos exports, restoring the original creation dates and producing a clean, chronologically organised photo library. No installation required. No technical knowledge needed. Zero storage of user photos.
+
+Market Gap:
+Competitors offer general EXIF tools, large photo-management suites, or technical command-line utilities.
+None provide a one-click, automated solution that understands Google Takeout JSON or Apple Photos export metadata.
+Users struggle with messy exports and wrong dates — a problem unaddressed by current tools.
+
+Target Users:
+
+Everyday users exporting photos from Google/Apple
+
+Parents/families backing up years of memories
+
+Photographers migrating libraries
+
+People switching cloud providers
+
+Anyone frustrated by broken export metadata
+
+The product fills a clear, underserved niche.
+
+2. Goals & Success Metrics
+Primary Goals (3–5):
+
+Provide the simplest, fastest way to correct Google/Apple export metadata.
+
+Minimise friction with a 100% browser-based tool requiring no installation.
+
+Build trust with strict no-storage processing and instant deletion.
+
+Deliver professionally organised ZIP files that users can immediately archive, back up, or import elsewhere.
+
+Establish paid, sustainable monetisation via one-off purchase or upgrade tiers.
+
+Success Metrics:
+
+80%+ of users complete a full repair without support.
+
+Positive user feedback (e.g., “finally fixes Takeout dates”).
+
+Strong conversion rate from free demo → paid plan.
+
+Low support burden due to predictable, automated workflow.
+
+3. User Personas & Use Cases
+Persona 1: The Family Archivist
+
+Backing up years of children’s photos from Google Photos; sees wrong dates after export.
+Needs a fast, trustworthy fix.
+
+Persona 2: The Device Switcher
+
+Migrating from Apple Photos to PC/Android and needs consistent dates across folders.
+
+Persona 3: The Photographer
+
+Has thousands of files with missing EXIF timestamps; wants batch correction done right.
+
+Persona 4: The Non-Technical User
+
+Wants zero complexity — upload ZIP → download fixed ZIP.
+
+Underserved Segments:
+
+Google Takeout users with JSON sidecars
+
+Apple Photos users exporting large libraries
+
+Users afraid of command-line tools
+
+4. Feature Requirements
+Five Shared Must-Have Features (baseline):
+
+Batch metadata fixing — automated processing of thousands of files.
+
+Correction of wrong creation dates — using Google/Apple metadata.
+
+Simple upload → process → download flow.
+
+Preview of processing summary (e.g., “3,912 photos repaired”).
+
+Clean chronological organisation — sorted folders by year.
+
+Three USP Differentiators (core innovation):
+
+Native Google Takeout JSON parsing
+
+Accept .json + .jpg pairs
+
+Extract correct timestamps
+
+Apply to EXIF automatically
+Acceptance criteria: Handles all common Google Photos export formats.
+
+Native Apple Photos export handling
+
+Read Apple’s metadata (from “Export Unmodified Originals”)
+
+Fix missing or wrong EXIF data
+Acceptance criteria: Works with standard Apple export bundles.
+
+Pure browser-based workflow with auto-deletion
+
+Nothing stored
+
+Temporary processing
+
+Clear trust messaging
+Acceptance criteria: All files removed from server immediately after ZIP delivery.
+
+5. UX & Design Notes
+Principles:
+
+Clean, minimal interface.
+
+One primary call-to-action: Upload ZIP.
+
+Progress bar + status messages (“Fixing dates… Organising… Packaging…”).
+
+Summary screen highlighting fixes.
+
+Prominent privacy reassurance.
+
+Optional settings collapsed (“Rename style”, “Sort by month”, etc.).
+
+Flow:
+
+Upload → Processing → Summary → Download.
+
+6. Technical & Integration Requirements
+Frontend:
+
+Simple upload UI (HTML/Tailwind).
+
+Progress indicators.
+
+Download link for ZIP.
+
+Backend:
+
+Python + Flask/FastAPI
+
+Libraries: Pillow, piexif, json, zipfile, tempfile
+
+Temporary directory handling
+
+Error handling for corrupted or mismatched JSON
+
+Database:
+
+None required.
+
+Stateless, 100% temporary.
+
+APIs:
+
+None required.
+
+Environment:
+
+Replit for MVP
+
+Auto-deletion with shutil.rmtree()
+
+File-size limit (e.g., 2GB)
+
+7. Pricing & Monetisation
+
+Aligned with competitor price ranges but differentiated by simplicity:
+
+Web Version
+
+£25–£50 one-off
+
+Optional: £10/month unlimited batch processing
+
+Desktop Version (local-only privacy)
+
+£40–£80 one-off
+
+Premium trust value
+
+Bundles
+
+£60–£100 Google+Apple
+
+Affiliate program for influencers
+
+8. Competitive Positioning
+
+Competitors = general EXIF editors, heavy photo suites, or command-line tools.
+
+None offer native Takeout/Apple metadata repair.
+
+None provide browser-based one-click fixing.
+
+Position as the simplest, safest, most accurate way to fix Google/Apple exports.
+
+9. Risks & Assumptions
+Risks:
+
+Large file uploads may stress servers → solution = file-size limits + desktop app.
+
+Users may be privacy-sensitive → solution = strong messaging + local version.
+
+Assumptions:
+
+Users accept ZIP upload if deletion is instant.
+
+Users prefer one-off pricing for utilities.
+
+Google/Apple export formats remain stable.
+
+10. Roadmap
+MVP (Phase 1)
+
+Upload ZIP
+
+Detect Google vs Apple
+
+Parse JSON / metadata
+
+Fix EXIF
+
+Sort by year
+
+Output clean ZIP
+
+Strong privacy messaging
+
+No accounts
+
+Phase 2
+
+Optional rename formats
+
+Sort by month
+
+Album reconstruction (Apple Photos)
+
+Large ZIP support (chunk processing)
+
+Phase 3
+
+Desktop app (local processing)
+
+Mobile app
+
+Cloud backup integrations
+
+Affiliate program rollout
