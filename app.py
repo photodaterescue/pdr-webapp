@@ -20,6 +20,32 @@ ALLOWED_EXTENSIONS = {'zip'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def safe_extract_zip(zip_file, extract_path):
+    abs_extract_path = os.path.abspath(extract_path)
+    
+    for member in zip_file.namelist():
+        if os.path.isabs(member):
+            raise ValueError(f"ZIP contains absolute path: {member}")
+        
+        member_path = os.path.abspath(os.path.join(extract_path, member))
+        
+        try:
+            common = os.path.commonpath([abs_extract_path, member_path])
+            if common != abs_extract_path:
+                raise ValueError(f"ZIP contains path traversal: {member}")
+        except ValueError:
+            raise ValueError(f"ZIP contains unsafe path: {member}")
+    
+    zip_file.extractall(extract_path)
+
+def cleanup_temp_dirs(temp_dirs):
+    for temp_dir in temp_dirs:
+        try:
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+        except Exception as e:
+            print(f"Error cleaning up {temp_dir}: {e}")
+
 def parse_google_takeout_json(json_path):
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
@@ -227,11 +253,12 @@ def upload_file():
         file.save(zip_path)
         
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            zip_ref.extractall(extract_dir)
+            safe_extract_zip(zip_ref, extract_dir)
         
         export_type = detect_export_type(extract_dir)
         
         if export_type == 'unknown':
+            cleanup_temp_dirs(temp_dirs)
             return jsonify({'error': 'Could not detect export type. Please upload a valid Google Takeout or Apple Photos export.'}), 400
         
         if export_type == 'google_takeout':
@@ -256,12 +283,7 @@ def upload_file():
         
         @response.call_on_close
         def cleanup():
-            for temp_dir in temp_dirs:
-                try:
-                    if os.path.exists(temp_dir):
-                        shutil.rmtree(temp_dir)
-                except Exception as e:
-                    print(f"Error cleaning up {temp_dir}: {e}")
+            cleanup_temp_dirs(temp_dirs)
         
         response.headers['X-Export-Type'] = export_type
         response.headers['X-Total-Files'] = str(stats['total_files'])
@@ -271,20 +293,13 @@ def upload_file():
         return response
         
     except zipfile.BadZipFile:
-        for temp_dir in temp_dirs:
-            try:
-                if os.path.exists(temp_dir):
-                    shutil.rmtree(temp_dir)
-            except:
-                pass
+        cleanup_temp_dirs(temp_dirs)
         return jsonify({'error': 'Invalid ZIP file'}), 400
+    except ValueError as e:
+        cleanup_temp_dirs(temp_dirs)
+        return jsonify({'error': f'Security error: {str(e)}'}), 400
     except Exception as e:
-        for temp_dir in temp_dirs:
-            try:
-                if os.path.exists(temp_dir):
-                    shutil.rmtree(temp_dir)
-            except:
-                pass
+        cleanup_temp_dirs(temp_dirs)
         return jsonify({'error': f'Processing error: {str(e)}'}), 500
 
 if __name__ == '__main__':
