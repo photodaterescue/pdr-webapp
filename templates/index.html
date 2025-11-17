@@ -70,36 +70,37 @@
         </header>
 
         <div id="upload-section" class="bg-white rounded-lg shadow-lg p-8 mb-8">
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-3">
-                    How should we handle photos with missing or broken metadata?
-                    <span class="text-red-500">*</span>
-                </label>
-                <div class="relative">
-                    <select id="metadataHandling" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none appearance-none bg-white pr-10">
-                        <option value="">Please select an option...</option>
-                        <option value="keep">Keep & rename (recommended) – put into Needs_Review folder, best filename</option>
-                        <option value="skip">Skip from fixed download – exclude from ZIP completely</option>
-                    </select>
-                    <svg id="checkmark" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </div>
-                <p class="text-xs text-gray-500 mt-2">This option affects photos where we cannot extract or restore timestamp metadata</p>
-            </div>
-
-            <div class="drop-zone p-12 rounded-lg text-center cursor-pointer opacity-50" id="dropZone">
+            <div class="drop-zone p-12 rounded-lg text-center cursor-pointer" id="dropZone">
                 <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                 </svg>
                 <h3 class="text-xl font-semibold text-gray-700 mb-2">Drop your ZIP file here</h3>
                 <p class="text-gray-500 mb-4">or click to browse</p>
-                <input type="file" id="fileInput" accept=".zip" class="hidden" disabled>
-                <button id="browseBtn" class="bg-gray-400 cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition duration-200" disabled>
+                <input type="file" id="fileInput" accept=".zip" class="hidden">
+                <button id="browseBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
                     Choose ZIP File
                 </button>
                 <p class="text-xs text-gray-400 mt-4">Maximum file size: 2GB</p>
-                <p class="text-xs text-orange-600 mt-2 font-medium">Please select a metadata handling option above first</p>
+            </div>
+
+            <div class="mt-4 text-center">
+                <button id="advancedToggle" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                    Advanced settings ⚙️
+                </button>
+            </div>
+
+            <div id="advancedSettings" class="hidden mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">Advanced Settings</h4>
+                <div class="space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="useMtimeFallback" class="mr-2 h-4 w-4 text-blue-600 rounded">
+                        <span class="text-sm text-gray-700">Allow fallback to Last Modified timestamp when no date is found</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="skipNoMetadata" class="mr-2 h-4 w-4 text-blue-600 rounded">
+                        <span class="text-sm text-gray-700">Skip files that have no usable metadata and no date in filename (exclude from ZIP)</span>
+                    </label>
+                </div>
             </div>
 
             <div id="fileInfo" class="hidden mt-6 p-4 bg-blue-50 rounded-lg">
@@ -254,51 +255,30 @@
         const errorSection = document.getElementById('error-section');
         const resetBtn = document.getElementById('resetBtn');
         const errorResetBtn = document.getElementById('errorResetBtn');
-        const metadataHandling = document.getElementById('metadataHandling');
-        const checkmark = document.getElementById('checkmark');
+        const advancedToggle = document.getElementById('advancedToggle');
+        const advancedSettings = document.getElementById('advancedSettings');
+        const useMtimeFallback = document.getElementById('useMtimeFallback');
+        const skipNoMetadata = document.getElementById('skipNoMetadata');
 
         let selectedFile = null;
         let downloadBlob = null;
-        let metadataOption = '';
 
-        metadataHandling.addEventListener('change', (e) => {
-            metadataOption = e.target.value;
-            if (metadataOption) {
-                checkmark.classList.remove('hidden');
-                dropZone.classList.remove('opacity-50');
-                dropZone.classList.add('cursor-pointer');
-                browseBtn.disabled = false;
-                browseBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-                browseBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                fileInput.disabled = false;
-                dropZone.querySelector('.text-orange-600').classList.add('hidden');
-            } else {
-                checkmark.classList.add('hidden');
-            }
+        advancedToggle.addEventListener('click', () => {
+            advancedSettings.classList.toggle('hidden');
         });
 
         browseBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (!metadataOption) {
-                alert('Please select how to handle photos with missing metadata first');
-                return;
-            }
             fileInput.click();
         });
 
         dropZone.addEventListener('click', () => {
-            if (!metadataOption) {
-                alert('Please select how to handle photos with missing metadata first');
-                return;
-            }
             fileInput.click();
         });
 
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            if (metadataOption) {
-                dropZone.classList.add('drag-over');
-            }
+            dropZone.classList.add('drag-over');
         });
 
         dropZone.addEventListener('dragleave', () => {
@@ -309,17 +289,10 @@
             e.preventDefault();
             dropZone.classList.remove('drag-over');
             
-            if (!metadataOption) {
-                alert('Please select how to handle photos with missing metadata first');
-                return;
-            }
-            
             if (e.dataTransfer.files.length > 0) {
                 const file = e.dataTransfer.files[0];
                 if (file.name.toLowerCase().endsWith('.zip')) {
                     handleFileSelect(file);
-                } else {
-                    alert('Please upload a ZIP file');
                 }
             }
         });
@@ -358,7 +331,8 @@
 
             const formData = new FormData();
             formData.append('file', selectedFile);
-            formData.append('metadata_handling', metadataOption);
+            formData.append('use_mtime_fallback', useMtimeFallback.checked ? 'true' : 'false');
+            formData.append('skip_no_metadata', skipNoMetadata.checked ? 'true' : 'false');
 
             try {
                 updateProgress(10, 'Uploading...');

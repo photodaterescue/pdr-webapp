@@ -205,7 +205,7 @@ def detect_export_type(extract_path):
     
     return 'unknown'
 
-def process_google_takeout(extract_path, output_path, metadata_handling):
+def process_google_takeout(extract_path, output_path, use_mtime_fallback=False, skip_no_metadata=False):
     stats = {
         'total_files': 0,
         'fixed': 0,
@@ -260,8 +260,16 @@ def process_google_takeout(extract_path, output_path, metadata_handling):
                     if timestamp:
                         classification = 'restored_from_filename'
                 
+                if timestamp is None and use_mtime_fallback:
+                    try:
+                        mtime = os.path.getmtime(image_path)
+                        timestamp = int(mtime)
+                        classification = 'fixed'
+                    except:
+                        pass
+                
                 if timestamp is None:
-                    if metadata_handling == 'skip':
+                    if skip_no_metadata:
                         stats['skipped'] += 1
                         continue
                     else:
@@ -277,8 +285,15 @@ def process_google_takeout(extract_path, output_path, metadata_handling):
                 year_folder = os.path.join(output_path, str(dt.year))
                 os.makedirs(year_folder, exist_ok=True)
                 
-                new_filename = f"{dt.strftime('%Y%m%d_%H%M%S')}_{stats['total_files']}{file_ext}"
+                base_filename = f"{dt.strftime('%Y%m%d_%H%M%S')}{file_ext}"
+                new_filename = base_filename
                 new_path = os.path.join(year_folder, new_filename)
+                
+                counter = 2
+                while os.path.exists(new_path):
+                    new_filename = f"{dt.strftime('%Y%m%d_%H%M%S')}_{counter}{file_ext}"
+                    new_path = os.path.join(year_folder, new_filename)
+                    counter += 1
                 
                 shutil.copy2(image_path, new_path)
                 
@@ -292,7 +307,7 @@ def process_google_takeout(extract_path, output_path, metadata_handling):
     
     return stats
 
-def process_apple_photos(extract_path, output_path, metadata_handling):
+def process_apple_photos(extract_path, output_path, use_mtime_fallback=False, skip_no_metadata=False):
     stats = {
         'total_files': 0,
         'fixed': 0,
@@ -337,8 +352,16 @@ def process_apple_photos(extract_path, output_path, metadata_handling):
                     if timestamp:
                         classification = 'restored_from_filename'
                 
+                if timestamp is None and use_mtime_fallback:
+                    try:
+                        mtime = os.path.getmtime(image_path)
+                        timestamp = int(mtime)
+                        classification = 'fixed'
+                    except:
+                        pass
+                
                 if timestamp is None:
-                    if metadata_handling == 'skip':
+                    if skip_no_metadata:
                         stats['skipped'] += 1
                         continue
                     else:
@@ -354,8 +377,15 @@ def process_apple_photos(extract_path, output_path, metadata_handling):
                 year_folder = os.path.join(output_path, str(dt.year))
                 os.makedirs(year_folder, exist_ok=True)
                 
-                new_filename = f"{dt.strftime('%Y%m%d_%H%M%S')}_{stats['total_files']}{file_ext}"
+                base_filename = f"{dt.strftime('%Y%m%d_%H%M%S')}{file_ext}"
+                new_filename = base_filename
                 new_path = os.path.join(year_folder, new_filename)
+                
+                counter = 2
+                while os.path.exists(new_path):
+                    new_filename = f"{dt.strftime('%Y%m%d_%H%M%S')}_{counter}{file_ext}"
+                    new_path = os.path.join(year_folder, new_filename)
+                    counter += 1
                 
                 shutil.copy2(image_path, new_path)
                 
@@ -405,16 +435,17 @@ def upload_file():
         
         export_type = detect_export_type(extract_dir)
         
-        metadata_handling = request.form.get('metadata_handling', 'keep')
+        use_mtime_fallback = request.form.get('use_mtime_fallback', 'false') == 'true'
+        skip_no_metadata = request.form.get('skip_no_metadata', 'false') == 'true'
         
         if export_type == 'unknown':
             cleanup_temp_dirs(temp_dirs)
             return jsonify({'error': 'Could not detect export type. Please upload a valid Google Takeout or Apple Photos export.'}), 400
         
         if export_type == 'google_takeout':
-            stats = process_google_takeout(extract_dir, output_dir, metadata_handling)
+            stats = process_google_takeout(extract_dir, output_dir, use_mtime_fallback, skip_no_metadata)
         else:
-            stats = process_apple_photos(extract_dir, output_dir, metadata_handling)
+            stats = process_apple_photos(extract_dir, output_dir, use_mtime_fallback, skip_no_metadata)
         
         output_zip_path = os.path.join(upload_dir, 'fixed_photos.zip')
         with zipfile.ZipFile(output_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:

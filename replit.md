@@ -33,6 +33,16 @@ The application provides:
 - 2GB file size limit
 
 ## Recent Changes
+- 2025-11-17: Major UX overhaul - Simplified interface with smart defaults
+  - **Removed required dropdown** - Users can now upload immediately without configuration
+  - **Smart default behavior** - Automatically handles all files intelligently (EXIF → XMP → Filename → Keep)
+  - **Advanced Settings panel** - Optional collapsible settings for power users:
+    * Toggle: Allow fallback to Last Modified timestamp (default OFF)
+    * Toggle: Skip files with no metadata (default OFF)
+  - **Cleaner filenames** - Now uses `YYYYMMDD_HHMMSS.jpg` format, only adds `_2`, `_3` on actual collisions
+  - **No more validation alerts** - Drop zone always active, no browser alert() popups
+  - All changes preserve existing privacy guarantees and security features
+
 - 2025-11-17: Enhanced filename date extraction for WhatsApp and common formats
   - Added detection for WhatsApp patterns: IMG-YYYYMMDD-WA####.*, IMG_YYYYMMDD_####.*
   - Added catch-all for any 8-digit date (YYYYMMDD) in filename

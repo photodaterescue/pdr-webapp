@@ -1,0 +1,75 @@
+You are editing my existing Replit app “Photo Metadata Fixer” (Flask + HTML/CSS/JS).
+Do not rebuild from scratch — just update the current codebase.
+
+High-level changes
+
+Remove the dropdown on the main screen.
+
+Delete the “How should we handle photos with missing or broken metadata?” <select> and its validation logic.
+
+The user should now be able to immediately drop or choose a ZIP file with no extra step.
+
+Set the handling behaviour to a sensible default (no user choice required):
+
+Implement this fixed smart flow in the backend:
+
+If EXIF timestamp exists → use it.
+
+Else if XMP has a timestamp → convert XMP → EXIF and use that.
+
+Else if filename contains a parsable date (e.g. Google/Apple style or WhatsApp style like IMG-20251110-WA0004.jpg) → parse that date and write EXIF from it.
+
+Else → keep the original filename, do not fabricate a date, and classify as “Renamed only (no metadata)” for the summary.
+
+This logic should run automatically for every file; no dropdown / choices needed on the main UI.
+
+Advanced settings (for power users) instead of dropdown:
+
+Add a small “Advanced settings ⚙️” link under the drop zone.
+
+When clicked, show a collapsible panel with a couple of optional toggles (default OFF):
+
+[ ] Allow fallback to Last Modified timestamp when no date is found
+
+[ ] Skip files that have no usable metadata and no date in filename (exclude from ZIP)
+
+The defaults must mimic the behaviour above (no skipping, no made-up timestamps).
+
+Persist the choices only for the current session (front-end state is fine; no DB).
+
+Fix 2 – Cleaner filenames:
+
+Use filename pattern: YYYYMMDD_HHMMSS.jpg for successfully dated photos.
+
+Only add a suffix like _2, _3, etc. when there is an actual name collision inside the same output folder.
+
+WhatsApp/imported filenames that already contain a valid date should be parsed to drive both EXIF and this new clean filename (e.g. IMG-20251110-WA0004.jpg → 20251110_070739.jpg based on the real timestamp).
+
+Summary text updates (already mostly done, just align terminology):
+
+Keep the improved result labels:
+
+“Fixed with full metadata”
+
+“Fixed from filename”
+
+“Renamed only (no metadata)”
+
+“Skipped (no metadata)”
+
+Ensure these counts reflect the new logic, including when Advanced settings toggles are used.
+
+Hero subtitle and wording:
+
+Update the main subtitle (top of page) to:
+Fix broken photo dates in Google Photos downloads & Apple Photos exports
+
+Keep the existing privacy line and tooltips for Google/Apple export types as they are now.
+
+UI detail: drop zone state:
+
+Since there is no mandatory dropdown anymore, remove any JS that blocks uploads or throws alert popups like “Please select how to handle photos with missing metadata first”.
+
+The drop zone should always be active as long as a ZIP is chosen; no ugly browser alert() calls.
+
+Please make these changes across the HTML, JS, and Python files as needed, then run the app so I can test with a new ZIP export.
