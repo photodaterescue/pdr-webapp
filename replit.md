@@ -28,14 +28,16 @@ The application provides:
 - 2GB file size limit
 
 ## Recent Changes
-- 2025-11-17: Initial MVP implementation
+- 2025-11-17: Initial MVP implementation with security hardening
   - Flask backend with upload/processing endpoints
   - Frontend UI with Tailwind CSS
-  - Google Takeout JSON parser
-  - Apple Photos metadata handler
+  - Google Takeout JSON parser (photoTakenTime, creationTime)
+  - Apple Photos metadata handler (EXIF extraction, fallback to mtime)
   - EXIF date correction for JPEG files
-  - Automatic cleanup with secure deletion
+  - Automatic cleanup with secure deletion on all paths
   - Progress tracking and summary display
+  - ZIP-slip protection with commonpath validation
+  - Secure extraction preventing path traversal attacks
 
 ## Project Architecture
 
