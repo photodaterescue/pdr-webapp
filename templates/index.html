@@ -65,7 +65,7 @@
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <header class="text-center mb-12">
             <h1 class="text-4xl font-bold text-gray-900 mb-4">Photo Metadata Fixer</h1>
-            <p class="text-xl text-gray-600 mb-2">Fix broken timestamps in Google Photos Takeout & Apple Photos exports</p>
+            <p class="text-xl text-gray-600 mb-2">Fix broken photo dates in Google Photos downloads & Apple Photos exports</p>
             <p class="text-sm text-green-600 font-medium">🔒 100% Private - Files processed in-browser and deleted immediately</p>
         </header>
 
@@ -209,7 +209,20 @@
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
             <h3 class="font-semibold text-blue-900 mb-3">How it works</h3>
             <ol class="list-decimal list-inside space-y-2 text-sm text-blue-800">
-                <li>Upload your Google Takeout or Apple Photos export ZIP file</li>
+                <li>Upload your 
+                    <span class="font-semibold">Google Photos Download</span>
+                    <span class="tooltip-container">
+                        <span class="tooltip-icon">ⓘ</span>
+                        <span class="tooltip-text">Also known as: Google Photos backup, Google Photos archive, Google Photos Takeout ZIP</span>
+                    </span>
+                    or 
+                    <span class="font-semibold">Apple Photos Export (Unmodified Originals)</span>
+                    <span class="tooltip-container">
+                        <span class="tooltip-icon">ⓘ</span>
+                        <span class="tooltip-text">Also known as: Photos.app Export, Apple Photos library export, iCloud Photos download</span>
+                    </span>
+                    ZIP file
+                </li>
                 <li>We automatically detect the export type and parse metadata</li>
                 <li>Original timestamps are restored to EXIF data</li>
                 <li>Photos are organized into folders by year with clean filenames</li>
@@ -433,18 +446,18 @@
             const exportTypeEl = document.getElementById('exportType');
             if (exportType === 'google_takeout') {
                 exportTypeEl.innerHTML = `
-                    Google Photos Export (ZIP)
+                    Google Photos Download
                     <span class="tooltip-container">
-                        <span class="tooltip-icon">🛈</span>
-                        <span class="tooltip-text">Also known as: Google Photos download, Google Photos backup, Google Photos archive, Google Takeout export.</span>
+                        <span class="tooltip-icon">ⓘ</span>
+                        <span class="tooltip-text">Also known as: Google Photos backup, Google Photos archive, Google Photos Takeout ZIP</span>
                     </span>
                 `;
             } else {
                 exportTypeEl.innerHTML = `
                     Apple Photos Export (Unmodified Originals)
                     <span class="tooltip-container">
-                        <span class="tooltip-icon">🛈</span>
-                        <span class="tooltip-text">Also known as: Apple Photos library export, iCloud Photos download, Photos.app export.</span>
+                        <span class="tooltip-icon">ⓘ</span>
+                        <span class="tooltip-text">Also known as: Photos.app Export, Apple Photos library export, iCloud Photos download</span>
                     </span>
                 `;
             }

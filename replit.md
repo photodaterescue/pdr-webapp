@@ -33,10 +33,13 @@ The application provides:
 - 2GB file size limit
 
 ## Recent Changes
-- 2025-11-17: UX enhancement - Export type tooltips
-  - Added hover tooltips with info icons on results screen
-  - Tooltips show alternative names for export types (Google Photos Export/Apple Photos Export)
-  - Clean UI design with smooth hover transitions
+- 2025-11-17: UX enhancement - Consistent terminology and tooltips
+  - Updated headline: "Fix broken photo dates" (more user-friendly than "timestamps")
+  - Changed "Google Photos Takeout" → "Google Photos Download" across entire app
+  - Added hover tooltips with ⓘ icons on BOTH upload screen and results screen
+  - Tooltips show alternative names users might recognize (Takeout ZIP, Photos.app Export, etc.)
+  - Consistent terminology across all pages for clarity
+  - Clean UI design with smooth fade-in hover transitions
 
 - 2025-11-17: Phase 2 implementation - Advanced metadata handling
   - Added required dropdown for metadata handling options (keep/rename vs skip)
