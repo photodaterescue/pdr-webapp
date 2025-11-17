@@ -33,6 +33,14 @@ The application provides:
 - 2GB file size limit
 
 ## Recent Changes
+- 2025-11-17: Enhanced filename date extraction for WhatsApp and common formats
+  - Added detection for WhatsApp patterns: IMG-YYYYMMDD-WA####.*, IMG_YYYYMMDD_####.*
+  - Added catch-all for any 8-digit date (YYYYMMDD) in filename
+  - Files with filename dates now properly classified as "restored_from_filename"
+  - Uses 12:00:00 as safe placeholder when only date available (no time)
+  - WhatsApp photos and similar formats no longer go to Needs_Review
+  - Only truly undatable files (no EXIF, XMP, or filename date) go to Needs_Review or are skipped
+
 - 2025-11-17: UX enhancement - Consistent terminology and tooltips
   - Updated headline: "Fix broken photo dates" (more user-friendly than "timestamps")
   - Changed "Google Photos Takeout" → "Google Photos Download" across entire app
