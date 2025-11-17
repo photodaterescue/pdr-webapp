@@ -241,7 +241,9 @@
 
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.classList.add('drag-over');
+            if (metadataOption) {
+                dropZone.classList.add('drag-over');
+            }
         });
 
         dropZone.addEventListener('dragleave', () => {
@@ -251,6 +253,11 @@
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('drag-over');
+            
+            if (!metadataOption) {
+                alert('Please select how to handle photos with missing metadata first');
+                return;
+            }
             
             if (e.dataTransfer.files.length > 0) {
                 const file = e.dataTransfer.files[0];

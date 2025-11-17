@@ -284,7 +284,8 @@ def process_google_takeout(extract_path, output_path, metadata_handling):
                 else:
                     os.utime(new_path, (timestamp, timestamp))
                 
-                stats[classification] += 1
+                if classification:
+                    stats[classification] += 1
     
     return stats
 
@@ -360,7 +361,8 @@ def process_apple_photos(extract_path, output_path, metadata_handling):
                 else:
                     os.utime(new_path, (timestamp, timestamp))
                 
-                stats[classification] += 1
+                if classification:
+                    stats[classification] += 1
     
     return stats
 
