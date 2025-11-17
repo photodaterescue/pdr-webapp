@@ -15,19 +15,33 @@ A browser-based tool that automatically fixes broken metadata and incorrect time
 - Users switching between cloud providers
 - Anyone frustrated by messy export metadata
 
-## Current State (MVP - Phase 1)
+## Current State (MVP - Phase 2)
 The application provides:
-- ZIP file upload with drag-and-drop interface
+- ZIP file upload with drag-and-drop interface (with metadata option validation)
 - Automatic detection of Google Takeout vs Apple Photos exports
 - Google Takeout JSON parsing and EXIF correction
 - Apple Photos metadata extraction and fixing
+- **NEW: XMP metadata extraction** (timestamps and orientation)
+- **NEW: Filename-based date parsing fallback** (YYYYMMDD, YYYY-MM-DD formats)
+- **NEW: Four-tier file classification system** (fixed, restored_from_filename, renamed_only, skipped)
+- **NEW: Needs_Review folder** for files with no extractable metadata
+- **NEW: User-configurable missing metadata handling** (keep/rename vs skip entirely)
 - Chronological organization by year
 - Batch processing with real-time progress tracking
-- Processing summary with statistics
+- Processing summary with detailed statistics (4 separate counters)
 - Automatic file deletion after download (privacy guarantee)
 - 2GB file size limit
 
 ## Recent Changes
+- 2025-11-17: Phase 2 implementation - Advanced metadata handling
+  - Added required dropdown for metadata handling options (keep/rename vs skip)
+  - Implemented XMP metadata extraction (timestamps + orientation)
+  - Added filename-to-EXIF parsing fallback (YYYYMMDD, YYYY-MM-DD formats)
+  - Four-tier classification system with detailed counters
+  - Needs_Review folder for renamed_only files
+  - Upload validation (both click and drag-and-drop) requires metadata option first
+  - Results screen shows: fixed, restored from filename, renamed only, skipped counts
+
 - 2025-11-17: Initial MVP implementation with security hardening
   - Flask backend with upload/processing endpoints
   - Frontend UI with Tailwind CSS
@@ -68,12 +82,25 @@ The application provides:
    - Falls back to file modification times
    - Preserves original quality
 
-3. **File Organization**
+3. **Advanced Metadata Extraction** (Phase 2)
+   - Four-tier metadata extraction hierarchy:
+     1. JSON sidecars (Google Takeout) or existing EXIF
+     2. XMP metadata (timestamps and orientation)
+     3. Filename parsing (YYYYMMDD, YYYY-MM-DD formats)
+     4. User-selected handling (keep/rename or skip)
+   - Intelligent date validation (1970-2100 range)
+   - Orientation extraction from XMP data
+
+4. **File Classification & Organization**
+   - **Fixed**: Files with successfully restored metadata
+   - **Restored from Filename**: Files with dates parsed from filenames
+   - **Renamed Only**: Files placed in Needs_Review folder (no extractable metadata)
+   - **Skipped**: Files excluded from output (when user selects "skip" option)
    - Organizes photos into year-based folders
    - Renames files with timestamp format: YYYYMMDD_HHMMSS_N
    - Creates clean ZIP for download
 
-4. **Privacy & Security**
+5. **Privacy & Security**
    - All processing in temporary directories
    - Files deleted immediately after download
    - No database or persistent storage
