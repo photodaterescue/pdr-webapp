@@ -3,6 +3,8 @@ import json
 import shutil
 import tempfile
 import zipfile
+import re
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file
@@ -45,6 +47,76 @@ def cleanup_temp_dirs(temp_dirs):
                 shutil.rmtree(temp_dir)
         except Exception as e:
             print(f"Error cleaning up {temp_dir}: {e}")
+
+def extract_xmp_metadata(image_path):
+    try:
+        with open(image_path, 'rb') as f:
+            content = f.read()
+        
+        xmp_start = content.find(b'<x:xmpmeta')
+        xmp_end = content.find(b'</x:xmpmeta>')
+        
+        if xmp_start != -1 and xmp_end != -1:
+            xmp_data = content[xmp_start:xmp_end + 12]
+            
+            try:
+                xmp_str = xmp_data.decode('utf-8', errors='ignore')
+                
+                date_patterns = [
+                    r'xmp:CreateDate[=>"\s]+(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
+                    r'exif:DateTimeOriginal[=>"\s]+(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
+                    r'photoshop:DateCreated[=>"\s]+(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
+                ]
+                
+                for pattern in date_patterns:
+                    match = re.search(pattern, xmp_str)
+                    if match:
+                        date_str = match.group(1)
+                        dt = datetime.strptime(date_str[:19], '%Y-%m-%dT%H:%M:%S')
+                        return {'timestamp': int(dt.timestamp()), 'orientation': None}
+                
+                orientation_pattern = r'tiff:Orientation[=>"\s]+(\d+)'
+                orient_match = re.search(orientation_pattern, xmp_str)
+                orientation = int(orient_match.group(1)) if orient_match else None
+                
+                return {'timestamp': None, 'orientation': orientation}
+            except:
+                pass
+        
+        return None
+    except Exception as e:
+        print(f"Error extracting XMP from {image_path}: {e}")
+        return None
+
+def parse_filename_for_date(filename):
+    patterns = [
+        r'(\d{4})[-_]?(\d{2})[-_]?(\d{2})[-_]?(\d{2})[-_]?(\d{2})[-_]?(\d{2})',
+        r'(\d{4})(\d{2})(\d{2})[_-](\d{2})(\d{2})(\d{2})',
+        r'IMG[-_](\d{4})(\d{2})(\d{2})[-_](\d{2})(\d{2})(\d{2})',
+        r'VID[-_](\d{4})(\d{2})(\d{2})[-_](\d{2})(\d{2})(\d{2})',
+        r'(\d{4})[-_](\d{2})[-_](\d{2})',
+    ]
+    
+    for pattern in patterns:
+        match = re.search(pattern, filename)
+        if match:
+            groups = match.groups()
+            try:
+                if len(groups) >= 6:
+                    year, month, day, hour, minute, second = map(int, groups[:6])
+                    dt = datetime(year, month, day, hour, minute, second)
+                elif len(groups) >= 3:
+                    year, month, day = map(int, groups[:3])
+                    dt = datetime(year, month, day, 12, 0, 0)
+                else:
+                    continue
+                
+                if 1970 <= year <= 2100 and 1 <= month <= 12 and 1 <= day <= 31:
+                    return int(dt.timestamp())
+            except ValueError:
+                continue
+    
+    return None
 
 def parse_google_takeout_json(json_path):
     try:
@@ -130,11 +202,13 @@ def detect_export_type(extract_path):
     
     return 'unknown'
 
-def process_google_takeout(extract_path, output_path):
+def process_google_takeout(extract_path, output_path, metadata_handling):
     stats = {
         'total_files': 0,
-        'fixed_files': 0,
-        'errors': 0
+        'fixed': 0,
+        'restored_from_filename': 0,
+        'renamed_only': 0,
+        'skipped': 0
     }
     
     photo_extensions = {'.jpg', '.jpeg', '.png', '.heic', '.heif', '.gif', '.bmp', '.webp'}
@@ -147,17 +221,54 @@ def process_google_takeout(extract_path, output_path):
             if file_ext in photo_extensions:
                 stats['total_files'] += 1
                 image_path = os.path.join(root, file)
+                
+                timestamp = None
+                classification = None
                 
                 json_path = image_path + '.json'
                 if not os.path.exists(json_path):
                     json_path = os.path.join(root, Path(file).stem + '.json')
                 
-                timestamp = None
                 if os.path.exists(json_path):
                     timestamp = parse_google_takeout_json(json_path)
+                    if timestamp:
+                        classification = 'fixed'
                 
                 if timestamp is None:
-                    timestamp = int(os.path.getmtime(image_path))
+                    try:
+                        img = Image.open(image_path)
+                        exif_dict = piexif.load(img.info.get('exif', b''))
+                        if piexif.ExifIFD.DateTimeOriginal in exif_dict.get('Exif', {}):
+                            date_str = exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal].decode('utf-8')
+                            dt = datetime.strptime(date_str, '%Y:%m:%d %H:%M:%S')
+                            timestamp = int(dt.timestamp())
+                            classification = 'fixed'
+                    except:
+                        pass
+                
+                if timestamp is None:
+                    xmp_data = extract_xmp_metadata(image_path)
+                    if xmp_data and xmp_data['timestamp']:
+                        timestamp = xmp_data['timestamp']
+                        classification = 'fixed'
+                
+                if timestamp is None:
+                    timestamp = parse_filename_for_date(file)
+                    if timestamp:
+                        classification = 'restored_from_filename'
+                
+                if timestamp is None:
+                    if metadata_handling == 'skip':
+                        stats['skipped'] += 1
+                        continue
+                    else:
+                        classification = 'renamed_only'
+                        needs_review_folder = os.path.join(output_path, 'Needs_Review')
+                        os.makedirs(needs_review_folder, exist_ok=True)
+                        new_path = os.path.join(needs_review_folder, file)
+                        shutil.copy2(image_path, new_path)
+                        stats['renamed_only'] += 1
+                        continue
                 
                 dt = datetime.fromtimestamp(timestamp)
                 year_folder = os.path.join(output_path, str(dt.year))
@@ -169,21 +280,21 @@ def process_google_takeout(extract_path, output_path):
                 shutil.copy2(image_path, new_path)
                 
                 if file_ext in {'.jpg', '.jpeg'}:
-                    if set_exif_datetime(new_path, timestamp):
-                        stats['fixed_files'] += 1
-                    else:
-                        stats['errors'] += 1
+                    set_exif_datetime(new_path, timestamp)
                 else:
                     os.utime(new_path, (timestamp, timestamp))
-                    stats['fixed_files'] += 1
+                
+                stats[classification] += 1
     
     return stats
 
-def process_apple_photos(extract_path, output_path):
+def process_apple_photos(extract_path, output_path, metadata_handling):
     stats = {
         'total_files': 0,
-        'fixed_files': 0,
-        'errors': 0
+        'fixed': 0,
+        'restored_from_filename': 0,
+        'renamed_only': 0,
+        'skipped': 0
     }
     
     photo_extensions = {'.jpg', '.jpeg', '.png', '.heic', '.heif', '.gif', '.bmp', '.webp'}
@@ -197,9 +308,43 @@ def process_apple_photos(extract_path, output_path):
                 stats['total_files'] += 1
                 image_path = os.path.join(root, file)
                 
-                timestamp = get_apple_photos_metadata(image_path)
+                timestamp = None
+                classification = None
+                
+                try:
+                    img = Image.open(image_path)
+                    exif_dict = piexif.load(img.info.get('exif', b''))
+                    if piexif.ExifIFD.DateTimeOriginal in exif_dict.get('Exif', {}):
+                        date_str = exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal].decode('utf-8')
+                        dt = datetime.strptime(date_str, '%Y:%m:%d %H:%M:%S')
+                        timestamp = int(dt.timestamp())
+                        classification = 'fixed'
+                except:
+                    pass
+                
                 if timestamp is None:
-                    timestamp = int(os.path.getmtime(image_path))
+                    xmp_data = extract_xmp_metadata(image_path)
+                    if xmp_data and xmp_data['timestamp']:
+                        timestamp = xmp_data['timestamp']
+                        classification = 'fixed'
+                
+                if timestamp is None:
+                    timestamp = parse_filename_for_date(file)
+                    if timestamp:
+                        classification = 'restored_from_filename'
+                
+                if timestamp is None:
+                    if metadata_handling == 'skip':
+                        stats['skipped'] += 1
+                        continue
+                    else:
+                        classification = 'renamed_only'
+                        needs_review_folder = os.path.join(output_path, 'Needs_Review')
+                        os.makedirs(needs_review_folder, exist_ok=True)
+                        new_path = os.path.join(needs_review_folder, file)
+                        shutil.copy2(image_path, new_path)
+                        stats['renamed_only'] += 1
+                        continue
                 
                 dt = datetime.fromtimestamp(timestamp)
                 year_folder = os.path.join(output_path, str(dt.year))
@@ -211,13 +356,11 @@ def process_apple_photos(extract_path, output_path):
                 shutil.copy2(image_path, new_path)
                 
                 if file_ext in {'.jpg', '.jpeg'}:
-                    if set_exif_datetime(new_path, timestamp):
-                        stats['fixed_files'] += 1
-                    else:
-                        stats['errors'] += 1
+                    set_exif_datetime(new_path, timestamp)
                 else:
                     os.utime(new_path, (timestamp, timestamp))
-                    stats['fixed_files'] += 1
+                
+                stats[classification] += 1
     
     return stats
 
@@ -257,14 +400,16 @@ def upload_file():
         
         export_type = detect_export_type(extract_dir)
         
+        metadata_handling = request.form.get('metadata_handling', 'keep')
+        
         if export_type == 'unknown':
             cleanup_temp_dirs(temp_dirs)
             return jsonify({'error': 'Could not detect export type. Please upload a valid Google Takeout or Apple Photos export.'}), 400
         
         if export_type == 'google_takeout':
-            stats = process_google_takeout(extract_dir, output_dir)
+            stats = process_google_takeout(extract_dir, output_dir, metadata_handling)
         else:
-            stats = process_apple_photos(extract_dir, output_dir)
+            stats = process_apple_photos(extract_dir, output_dir, metadata_handling)
         
         output_zip_path = os.path.join(upload_dir, 'fixed_photos.zip')
         with zipfile.ZipFile(output_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
@@ -287,8 +432,10 @@ def upload_file():
         
         response.headers['X-Export-Type'] = export_type
         response.headers['X-Total-Files'] = str(stats['total_files'])
-        response.headers['X-Fixed-Files'] = str(stats['fixed_files'])
-        response.headers['X-Errors'] = str(stats['errors'])
+        response.headers['X-Fixed-Files'] = str(stats['fixed'])
+        response.headers['X-Restored-Files'] = str(stats['restored_from_filename'])
+        response.headers['X-Renamed-Files'] = str(stats['renamed_only'])
+        response.headers['X-Skipped-Files'] = str(stats['skipped'])
         
         return response
         
