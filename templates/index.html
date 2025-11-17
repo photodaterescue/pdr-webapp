@@ -17,6 +17,48 @@
         .progress-bar {
             transition: width 0.3s ease;
         }
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip-icon {
+            cursor: help;
+            color: #6b7280;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 280px;
+            background-color: #1f2937;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -140px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -388,8 +430,25 @@
             processingSection.classList.add('hidden');
             summarySection.classList.remove('hidden');
 
-            document.getElementById('exportType').textContent = 
-                exportType === 'google_takeout' ? 'Google Takeout' : 'Apple Photos';
+            const exportTypeEl = document.getElementById('exportType');
+            if (exportType === 'google_takeout') {
+                exportTypeEl.innerHTML = `
+                    Google Photos Export (ZIP)
+                    <span class="tooltip-container">
+                        <span class="tooltip-icon">🛈</span>
+                        <span class="tooltip-text">Also known as: Google Photos download, Google Photos backup, Google Photos archive, Google Takeout export.</span>
+                    </span>
+                `;
+            } else {
+                exportTypeEl.innerHTML = `
+                    Apple Photos Export (Unmodified Originals)
+                    <span class="tooltip-container">
+                        <span class="tooltip-icon">🛈</span>
+                        <span class="tooltip-text">Also known as: Apple Photos library export, iCloud Photos download, Photos.app export.</span>
+                    </span>
+                `;
+            }
+            
             document.getElementById('totalFiles').textContent = totalFiles;
             document.getElementById('fixedFiles').textContent = fixedFiles;
             document.getElementById('restoredFiles').textContent = restoredFiles;

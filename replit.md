@@ -33,6 +33,11 @@ The application provides:
 - 2GB file size limit
 
 ## Recent Changes
+- 2025-11-17: UX enhancement - Export type tooltips
+  - Added hover tooltips with info icons on results screen
+  - Tooltips show alternative names for export types (Google Photos Export/Apple Photos Export)
+  - Clean UI design with smooth hover transitions
+
 - 2025-11-17: Phase 2 implementation - Advanced metadata handling
   - Added required dropdown for metadata handling options (keep/rename vs skip)
   - Implemented XMP metadata extraction (timestamps + orientation)
