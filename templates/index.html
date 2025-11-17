@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photo Metadata Fixer - Fix Google & Apple Photo Exports</title>
+    <title>Photo Date Rescue - Fix Google & Apple Photo Exports</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .drop-zone {
@@ -64,7 +64,7 @@
 <body class="bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <header class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Photo Metadata Fixer</h1>
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Photo Date Rescue</h1>
             <p class="text-xl text-gray-600 mb-2">Fix broken photo dates in Google Photos downloads & Apple Photos exports</p>
             <p class="text-sm text-green-600 font-medium">🔒 100% Private - Files processed in-browser and deleted immediately</p>
         </header>
@@ -93,12 +93,12 @@
                 <h4 class="text-sm font-semibold text-gray-700 mb-3">Advanced Settings</h4>
                 <div class="space-y-3">
                     <label class="flex items-center">
-                        <input type="checkbox" id="useMtimeFallback" class="mr-2 h-4 w-4 text-blue-600 rounded">
+                        <input type="checkbox" id="useMtimeFallback" class="mr-2 h-4 w-4 text-blue-600 rounded" checked>
                         <span class="text-sm text-gray-700">Allow fallback to Last Modified timestamp when no date is found</span>
                     </label>
                     <label class="flex items-center">
                         <input type="checkbox" id="skipNoMetadata" class="mr-2 h-4 w-4 text-blue-600 rounded">
-                        <span class="text-sm text-gray-700">Skip files that have no usable metadata and no date in filename (exclude from ZIP)</span>
+                        <span class="text-sm text-gray-700">Remove files with no valid date (exclude from ZIP)</span>
                     </label>
                 </div>
             </div>
@@ -170,11 +170,11 @@
                         <span id="totalFiles" class="font-semibold text-gray-900"></span>
                     </div>
                     <div class="flex justify-between border-t pt-2 mt-2">
-                        <span class="text-gray-600">Fixed with full metadata:</span>
+                        <span class="text-gray-600">Fixed with full metadata (EXIF or XMP → EXIF):</span>
                         <span id="fixedFiles" class="font-semibold text-green-600"></span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-gray-600">Fixed from filename:</span>
+                        <span class="text-gray-600">Fixed from filename (date guessed from filename pattern):</span>
                         <span id="restoredFiles" class="font-semibold text-blue-600"></span>
                     </div>
                     <div class="flex justify-between">
@@ -182,7 +182,7 @@
                         <span id="renamedFiles" class="font-semibold text-yellow-600"></span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-gray-600">Skipped (no metadata):</span>
+                        <span class="text-gray-600">Removed (no valid date):</span>
                         <span id="skippedFiles" class="font-semibold text-gray-600"></span>
                     </div>
                 </div>

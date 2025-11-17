@@ -1,0 +1,126 @@
+Replit Update Prompt – Photo Date Rescue
+
+I already have a working Flask web app in this Repl that fixes timestamps in Google Photos / Apple Photos exports. Please update the existing app (front-end + back-end) with the following changes. Keep the current structure; this is an incremental update, not a rewrite.
+
+1. Branding & hero text
+
+App name in the header: “Photo Date Rescue”.
+
+Subtitle under the name: “Fix broken photo dates in Google Photos downloads & Apple Photos exports”.
+
+Keep the existing “100% Private – files processed in-browser and deleted immediately” line as-is.
+
+2. Upload area & advanced settings
+
+Remove the old required dropdown. Users should be able to drag & drop or choose a ZIP immediately, with no blocking pop-ups.
+
+Keep the big dashed upload box and “Drop your ZIP file here or click to browse” text.
+
+Under the box, show a small “Advanced settings ⚙️” link that toggles a panel:
+
+Panel title: “Advanced Settings”
+
+Two checkboxes:
+
+Allow fallback to Last Modified timestamp when no date is found
+
+Checked by default.
+
+Remove files with no valid date (exclude from ZIP)
+
+Unchecked by default.
+
+Place them on separate lines with clear spacing.
+
+Advanced panel should be collapsed by default; clicking the link expands/collapses it. Keep current styles simple (no heavy borders).
+
+Drag-and-drop must always work, regardless of advanced settings. No JavaScript alert is needed anymore for “please select an option”.
+
+3. Back-end date-recovery logic (final flow)
+
+For each photo file:
+
+Try EXIF timestamp first.
+
+If EXIF date/time exists and is valid → use it.
+
+If EXIF missing or invalid, try XMP.
+
+If an XMP sidecar or embedded XMP with a valid timestamp exists → convert XMP timestamp to EXIF and use that.
+
+If EXIF and XMP both missing, try filename-based date.
+
+Detect date patterns commonly used by Google/Apple/messaging apps, for example:
+
+YYYYMMDD_HHMMSS
+
+YYYY-MM-DD_HH-MM-SS
+
+IMG-YYYYMMDD-WA#### (WhatsApp-style)
+
+If a valid date is found in the filename → create EXIF date/time from that and mark the photo as “fixed from filename”.
+
+Use a neutral time where only the date is known (e.g. 12:00:00) so photos on the same day sort correctly.
+
+If still nothing usable:
+
+If the “Allow fallback to Last Modified…” checkbox is ON → use the file’s last-modified timestamp to create EXIF and mark as “EXIF restored (Last Modified fallback)”.
+
+If that checkbox is OFF and there is still no valid date:
+
+If “Remove files with no valid date (exclude from ZIP)” is ON → do not include this file in the output ZIP; count it as “Removed (no valid date)”.
+
+Otherwise → leave it in the output ZIP with its original filename, but don’t add EXIF. Count as “Renamed only (no metadata)” or “Unchanged” depending on whether the folder structure changed.
+
+4. Filename rules (Cleaner Filenames)
+
+Base filename format: YYYYMMDD_HHMMSS for photos with a full timestamp.
+
+If multiple files resolve to the exact same YYYYMMDD_HHMMSS (e.g. burst shots or multiple messaging-app images):
+
+First file keeps YYYYMMDD_HHMMSS.jpg.
+
+Subsequent files get suffixes: YYYYMMDD_HHMMSS_2.jpg, YYYYMMDD_HHMMSS_3.jpg, etc.
+
+If only the date is known (no time), use YYYYMMDD_120000 and the same suffix rule for collisions.
+
+Do not add _1 when there is no collision; filenames without conflict should have no numeric suffix.
+
+5. Summary screen wording
+
+Keep the existing “Processing Complete” layout, but adjust the stats labels to:
+
+Fixed with full metadata (EXIF or XMP → EXIF)
+
+Fixed from filename (date guessed from filename pattern)
+
+Renamed only (no metadata) (no EXIF created, only organized / renamed)
+
+Removed (no valid date) (only when the second advanced checkbox is ON)
+
+For “Export Type”, keep the existing detection (“Google Photos Download (ZIP)” vs “Apple Photos Export (Unmodified Originals)”) and the hover tooltip text you already added.
+
+6. WA / messaging-app friendliness
+
+Ensure the filename date parser recognises patterns like IMG-YYYYMMDD-WA####.jpg and treats them as valid dates (using the date part only, ignoring the WA#### segment).
+
+This should work generically for similar patterns where a clear YYYYMMDD block exists in the filename.
+
+7. Copy tweaks
+
+Anywhere we currently say “Skip files that have no usable metadata and no date in filename…” replace with:
+Remove files with no valid date (exclude from ZIP)
+
+In the “How it works” box at the bottom, update line 1 to:
+Upload your Google Photos Download ⓵ or Apple Photos Export (Unmodified Originals) ⓶ ZIP file
+and keep the small info tooltip that explains alternate names (Google Photos backup/archive/Takeout, Photos.app export, etc.).
+
+After making these changes, please run the app and verify with a small test ZIP that:
+
+WhatsApp-style filenames like IMG-20251110-WA0006.jpg get the correct date.
+
+Files with EXIF keep their true timestamps.
+
+Files with no dates at all behave according to the two advanced checkboxes.
+
+Filenames only get _2, _3, etc. when there is an actual collision.

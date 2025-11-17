@@ -1,7 +1,7 @@
-# Photo Metadata Fixer
+# Photo Date Rescue
 
 ## Overview
-A browser-based tool that automatically fixes broken metadata and incorrect timestamps in Google Photos Takeout and Apple Photos exports. The application restores original creation dates and produces clean, chronologically organized photo libraries.
+A browser-based tool that automatically fixes broken metadata and incorrect timestamps in Google Photos downloads and Apple Photos exports. The application restores original creation dates and produces clean, chronologically organized photo libraries.
 
 ## Product Vision
 - Simple, secure, browser-based metadata correction
@@ -18,8 +18,8 @@ A browser-based tool that automatically fixes broken metadata and incorrect time
 ## Current State (MVP - Phase 2)
 The application provides:
 - ZIP file upload with drag-and-drop interface (with metadata option validation)
-- Automatic detection of Google Takeout vs Apple Photos exports
-- Google Takeout JSON parsing and EXIF correction
+- Automatic detection of Google Photos downloads vs Apple Photos exports
+- Google Photos download JSON parsing and EXIF correction
 - Apple Photos metadata extraction and fixing
 - **NEW: XMP metadata extraction** (timestamps and orientation)
 - **NEW: Filename-based date parsing fallback** (YYYYMMDD, YYYY-MM-DD formats)
@@ -33,12 +33,20 @@ The application provides:
 - 2GB file size limit
 
 ## Recent Changes
+- 2025-11-17: Branding update and final UX refinements
+  - **Rebranded to "Photo Date Rescue"** - More user-friendly, memorable name
+  - **Updated terminology** - "Google Photos downloads" instead of "Takeout" throughout
+  - **Advanced settings defaults changed** - "Allow fallback to Last Modified timestamp" now ON by default
+  - **Updated summary labels** - More descriptive explanations for each category:
+    * "Fixed with full metadata (EXIF or XMP → EXIF)"
+    * "Fixed from filename (date guessed from filename pattern)"
+    * "Removed (no valid date)" instead of "Skipped"
+  - **Simplified copy** - "Remove files with no valid date" instead of lengthy description
+
 - 2025-11-17: Major UX overhaul - Simplified interface with smart defaults
   - **Removed required dropdown** - Users can now upload immediately without configuration
   - **Smart default behavior** - Automatically handles all files intelligently (EXIF → XMP → Filename → Keep)
-  - **Advanced Settings panel** - Optional collapsible settings for power users:
-    * Toggle: Allow fallback to Last Modified timestamp (default OFF)
-    * Toggle: Skip files with no metadata (default OFF)
+  - **Advanced Settings panel** - Optional collapsible settings for power users
   - **Cleaner filenames** - Now uses `YYYYMMDD_HHMMSS.jpg` format, only adds `_2`, `_3` on actual collisions
   - **No more validation alerts** - Drop zone always active, no browser alert() popups
   - All changes preserve existing privacy guarantees and security features
@@ -55,7 +63,7 @@ The application provides:
   - Updated headline: "Fix broken photo dates" (more user-friendly than "timestamps")
   - Changed "Google Photos Takeout" → "Google Photos Download" across entire app
   - Added hover tooltips with ⓘ icons on BOTH upload screen and results screen
-  - Tooltips show alternative names users might recognize (Takeout ZIP, Photos.app Export, etc.)
+  - Tooltips show alternative names users might recognize (Google Takeout ZIP, Photos.app Export, etc.)
   - Consistent terminology across all pages for clarity
   - Clean UI design with smooth fade-in hover transitions
 
@@ -71,7 +79,7 @@ The application provides:
 - 2025-11-17: Initial MVP implementation with security hardening
   - Flask backend with upload/processing endpoints
   - Frontend UI with Tailwind CSS
-  - Google Takeout JSON parser (photoTakenTime, creationTime)
+  - Google Photos download JSON parser (photoTakenTime, creationTime)
   - Apple Photos metadata handler (EXIF extraction, fallback to mtime)
   - EXIF date correction for JPEG files
   - Automatic cleanup with secure deletion on all paths
@@ -98,7 +106,7 @@ The application provides:
   - Download functionality
 
 ### Key Features
-1. **Google Takeout Support**
+1. **Google Photos Download Support**
    - Parses JSON sidecars for timestamps
    - Applies correct dates to EXIF data
    - Handles photoTakenTime and creationTime fields
@@ -110,7 +118,7 @@ The application provides:
 
 3. **Advanced Metadata Extraction** (Phase 2)
    - Four-tier metadata extraction hierarchy:
-     1. JSON sidecars (Google Takeout) or existing EXIF
+     1. JSON sidecars (Google Photos downloads) or existing EXIF
      2. XMP metadata (timestamps and orientation)
      3. Filename parsing (YYYYMMDD, YYYY-MM-DD formats)
      4. User-selected handling (keep/rename or skip)
