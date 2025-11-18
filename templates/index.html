@@ -1,489 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photo Date Rescue - Fix Google & Apple Photo Exports</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .drop-zone {
-            border: 3px dashed #cbd5e0;
-            transition: all 0.3s ease;
-        }
-        .drop-zone.drag-over {
-            border-color: #4299e1;
-            background-color: #ebf8ff;
-        }
-        .progress-bar {
-            transition: width 0.3s ease;
-        }
-        .tooltip-container {
-            position: relative;
-            display: inline-block;
-        }
-        .tooltip-icon {
-            cursor: help;
-            color: #6b7280;
-            font-size: 14px;
-            margin-left: 4px;
-        }
-        .tooltip-text {
-            visibility: hidden;
-            width: 280px;
-            background-color: #1f2937;
-            color: #fff;
-            text-align: left;
-            border-radius: 6px;
-            padding: 8px 12px;
-            position: absolute;
-            z-index: 1000;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -140px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-        .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #1f2937 transparent transparent transparent;
-        }
-        .tooltip-container:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <meta property="og:title" content="Photo Date Rescue — Fix Broken Photo Timestamps">
+    <meta property="og:description" content="Restore original photo dates in minutes. Perfect for Google Photos downloads & Apple Photos exports. 100% private.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/static/preview.jpg">
+    <meta name="theme-color" content="#8c7bff">
+
+    <title>Photo Date Rescue — Fix Broken Photo Timestamps</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Photo Date Rescue</h1>
-            <p class="text-xl text-gray-600 mb-2">Fix broken photo dates in Google Photos downloads & Apple Photos exports</p>
-            <p class="text-sm text-green-600 font-medium">🔒 100% Private - Files processed in-browser and deleted immediately</p>
-        </header>
 
-        <div id="upload-section" class="bg-white rounded-lg shadow-lg p-8 mb-8">
-            <div class="drop-zone p-12 rounded-lg text-center cursor-pointer" id="dropZone">
-                <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">Drop your ZIP file here</h3>
-                <p class="text-gray-500 mb-4">or click to browse</p>
-                <input type="file" id="fileInput" accept=".zip" class="hidden">
-                <button id="browseBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
-                    Choose ZIP File
-                </button>
-                <p class="text-xs text-gray-400 mt-4">Maximum file size: 2GB</p>
-            </div>
+<body>
+<div class="page">
 
-            <div class="mt-4 text-center">
-                <button id="advancedToggle" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                    Advanced settings ⚙️
-                </button>
-            </div>
+    <header class="header">
+        <h1 class="app-title">Photo Date Rescue</h1>
+        <p class="app-subtitle">
+            Fix broken photo dates in Google Photos downloads &amp; Apple Photos exports.
+        </p>
+        <p class="mission">
+            Turn years of jumbled cloud downloads into a clean, chronological photo archive in minutes – without renaming files by hand.
+        </p>
+        <p class="privacy-banner">
+            🔒 100% Private – Files processed in-browser and deleted immediately
+        </p>
+    </header>
 
-            <div id="advancedSettings" class="hidden mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <h4 class="text-sm font-semibold text-gray-700 mb-3">Advanced Settings</h4>
-                <div class="space-y-3">
-                    <label class="flex items-center">
-                        <input type="checkbox" id="useMtimeFallback" class="mr-2 h-4 w-4 text-blue-600 rounded" checked>
-                        <span class="text-sm text-gray-700">Allow fallback to Last Modified timestamp when no date is found</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" id="skipNoMetadata" class="mr-2 h-4 w-4 text-blue-600 rounded">
-                        <span class="text-sm text-gray-700">Remove files with no valid date (exclude from ZIP)</span>
-                    </label>
+    <main class="main">
+
+        <!-- Upload card -->
+        <section class="card upload-card">
+
+            <!-- FORM WRAPS EVERYTHING (FIXED) -->
+            <form id="uploadForm" method="post" 
+                  action="{{ url_for('upload_file') }}" 
+                  enctype="multipart/form-data">
+
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-inner">
+                        <div class="dropzone-icon">☁️</div>
+                        <h2 class="dropzone-title">Drop your ZIP file here</h2>
+                        <p class="dropzone-subtitle">or click to browse</p>
+
+                        <button type="button" class="btn-primary" id="chooseFileBtn">
+                            Choose ZIP File
+                        </button>
+
+                        <p class="dropzone-meta">
+                            Web upload limit: ~100 MB per ZIP (Beta).  
+                            Larger archives supported in upcoming desktop version.
+                        </p>
+
+                        <!-- REAL FILE INPUT MUST REMAIN AS NAME="zip_file" -->
+                        <input type="file" id="fileInput" name="zip_file" accept=".zip" hidden />
+                    </div>
                 </div>
-            </div>
 
-            <div id="fileInfo" class="hidden mt-6 p-4 bg-blue-50 rounded-lg">
-                <p class="text-sm text-gray-700">Selected: <span id="fileName" class="font-semibold"></span></p>
-                <p class="text-sm text-gray-700">Size: <span id="fileSize" class="font-semibold"></span></p>
-                <button id="uploadBtn" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+                <!-- Advanced settings -->
+                <div class="advanced-wrapper">
+                    <button type="button" class="advanced-toggle" id="advancedToggle">
+                        Advanced settings <span class="gear-icon">⚙️</span>
+                    </button>
+
+                    <div class="advanced-panel" id="advancedPanel">
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="useMtimeFallback" checked />
+                            <span>Allow fallback to Last Modified timestamp when no date is found (recommended)</span>
+                        </label>
+
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="removeNoDateFiles" />
+                            <span>Remove files with no valid date (exclude from ZIP)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Hidden fields -->
+                <input type="hidden" name="use_mtime_fallback" id="useMtimeField" value="true">
+                <input type="hidden" name="remove_no_date_files" id="removeNoDateField" value="false">
+
+                <!-- Submit button -->
+                <button type="submit" class="submit-btn" id="startProcessingBtn" disabled>
                     Start Processing
                 </button>
-            </div>
-        </div>
+            </form>
+        </section>
 
-        <div id="processing-section" class="hidden bg-white rounded-lg shadow-lg p-8 mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Processing Your Photos</h2>
-            
-            <div class="mb-6">
-                <div class="flex justify-between text-sm text-gray-600 mb-2">
-                    <span id="statusText">Uploading...</span>
-                    <span id="progressPercent">0%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-3">
-                    <div id="progressBar" class="progress-bar bg-blue-600 h-3 rounded-full" style="width: 0%"></div>
-                </div>
-            </div>
 
-            <div class="space-y-3 text-sm text-gray-600">
-                <div class="flex items-center">
-                    <span id="step1" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">1</span>
-                    <span>Extracting ZIP file</span>
-                </div>
-                <div class="flex items-center">
-                    <span id="step2" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">2</span>
-                    <span>Detecting export type (Google/Apple)</span>
-                </div>
-                <div class="flex items-center">
-                    <span id="step3" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">3</span>
-                    <span>Fixing metadata and timestamps</span>
-                </div>
-                <div class="flex items-center">
-                    <span id="step4" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">4</span>
-                    <span>Organizing by year</span>
-                </div>
-                <div class="flex items-center">
-                    <span id="step5" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">5</span>
-                    <span>Creating fixed ZIP file</span>
-                </div>
-            </div>
-        </div>
-
-        <div id="summary-section" class="hidden bg-white rounded-lg shadow-lg p-8 mb-8">
-            <div class="text-center mb-6">
-                <svg class="mx-auto h-16 w-16 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Processing Complete!</h2>
-                <p class="text-gray-600">Your photos have been fixed and organized</p>
-            </div>
-
-            <div class="bg-gray-50 rounded-lg p-6 mb-6">
-                <h3 class="font-semibold text-gray-900 mb-4">Summary</h3>
-                <div class="space-y-2 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Export Type:</span>
-                        <span id="exportType" class="font-semibold text-gray-900"></span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Total Photos:</span>
-                        <span id="totalFiles" class="font-semibold text-gray-900"></span>
-                    </div>
-                    <div class="flex justify-between border-t pt-2 mt-2">
-                        <span class="text-gray-600">Fixed with full metadata (EXIF or XMP → EXIF):</span>
-                        <span id="fixedFiles" class="font-semibold text-green-600"></span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Fixed from filename (date guessed from filename pattern):</span>
-                        <span id="restoredFiles" class="font-semibold text-blue-600"></span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Renamed only (no metadata):</span>
-                        <span id="renamedFiles" class="font-semibold text-yellow-600"></span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Removed (no valid date):</span>
-                        <span id="skippedFiles" class="font-semibold text-gray-600"></span>
-                    </div>
-                </div>
-            </div>
-
-            <button id="downloadBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition duration-200 mb-4">
-                Download Fixed Photos
-            </button>
-
-            <button id="resetBtn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
-                Process Another ZIP
-            </button>
-
-            <p class="text-xs text-gray-500 text-center mt-4">Files have been automatically deleted from our servers</p>
-        </div>
-
-        <div id="error-section" class="hidden bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
-            <h3 class="text-lg font-semibold text-red-900 mb-2">Error</h3>
-            <p id="errorMessage" class="text-red-700"></p>
-            <button id="errorResetBtn" class="mt-4 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Try Again
-            </button>
-        </div>
-
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-            <h3 class="font-semibold text-blue-900 mb-3">How it works</h3>
-            <ol class="list-decimal list-inside space-y-2 text-sm text-blue-800">
-                <li>Upload your 
-                    <span class="font-semibold">Google Photos Download</span>
-                    <span class="tooltip-container">
-                        <span class="tooltip-icon">ⓘ</span>
-                        <span class="tooltip-text">Also known as: Google Photos backup, Google Photos archive, Google Photos Takeout ZIP</span>
+        <!-- HOW IT WORKS -->
+        <section class="card info-card">
+            <h2>How it works</h2>
+            <ol class="how-list">
+                <li>
+                    Upload your 
+                    <span class="tooltip-label">Google Photos Download
+                        <span class="tooltip-icon">ⓘ
+                            <span class="tooltip-text">
+                                Also known as: Google Photos backup, Google Photos archive, Google Takeout ZIP.
+                            </span>
+                        </span>
                     </span>
-                    or 
-                    <span class="font-semibold">Apple Photos Export (Unmodified Originals)</span>
-                    <span class="tooltip-container">
-                        <span class="tooltip-icon">ⓘ</span>
-                        <span class="tooltip-text">Also known as: Photos.app Export, Apple Photos library export, iCloud Photos download</span>
+                    or
+                    <span class="tooltip-label">Apple Photos Export (Unmodified Originals)
+                        <span class="tooltip-icon">ⓘ
+                            <span class="tooltip-text">
+                                Also known as: Apple Photos library export, iCloud Photos download, Photos.app export.
+                            </span>
+                        </span>
                     </span>
-                    ZIP file
+                    ZIP file.
                 </li>
-                <li>We automatically detect the export type and parse metadata</li>
-                <li>Original timestamps are restored to EXIF data</li>
-                <li>Photos are organized into folders by year with clean filenames</li>
-                <li>Download your fixed ZIP - all files are deleted immediately after</li>
+                <li>We automatically detect the export type and parse metadata.</li>
+                <li>Original timestamps are restored to EXIF data whenever possible.</li>
+                <li>Photos are organized into folders by year with clean filenames.</li>
+                <li>Download your fixed ZIP – all files are deleted immediately after.</li>
             </ol>
-        </div>
+        </section>
 
-        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
-            <h3 class="font-semibold text-green-900 mb-3">Privacy Guarantee</h3>
-            <p class="text-sm text-green-800 mb-2">
-                Your photos are processed entirely on our server with temporary storage only. 
-                All files are automatically deleted the moment your download completes.
-            </p>
-            <p class="text-sm text-green-800">
-                We never store, view, or share your photos. Zero retention. Zero tracking.
-            </p>
-        </div>
-    </div>
+        <!-- PRIVACY -->
+        <section class="card info-card privacy-card">
+            <h2>Privacy Guarantee</h2>
+            <p>Your photos are processed entirely on our server with temporary storage only.</p>
+            <p>All files are automatically deleted as soon as your download completes.</p>
+            <p>We never store, view, or share your photos. Zero retention. Zero tracking.</p>
+        </section>
 
-    <script>
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const browseBtn = document.getElementById('browseBtn');
-        const fileInfo = document.getElementById('fileInfo');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const uploadSection = document.getElementById('upload-section');
-        const processingSection = document.getElementById('processing-section');
-        const summarySection = document.getElementById('summary-section');
-        const errorSection = document.getElementById('error-section');
-        const resetBtn = document.getElementById('resetBtn');
-        const errorResetBtn = document.getElementById('errorResetBtn');
-        const advancedToggle = document.getElementById('advancedToggle');
-        const advancedSettings = document.getElementById('advancedSettings');
-        const useMtimeFallback = document.getElementById('useMtimeFallback');
-        const skipNoMetadata = document.getElementById('skipNoMetadata');
+        <!-- FAQ -->
+        <section class="card info-card faq-card">
+            <h2>Frequently Asked Questions</h2>
 
-        let selectedFile = null;
-        let downloadBlob = null;
+            <p><strong>What happens if a photo has no date?</strong></p>
+            <p>If enabled, we fall back to the Last Modified timestamp to keep your library chronological.</p>
 
-        advancedToggle.addEventListener('click', () => {
-            advancedSettings.classList.toggle('hidden');
-        });
+            <p><strong>Will filenames change?</strong></p>
+            <p>Only if metadata provides a timestamp. Fallback dates do <em>not</em> change filenames.</p>
 
-        browseBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            fileInput.click();
-        });
+            <p><strong>Are my files ever stored?</strong></p>
+            <p>No. Everything is processed in-memory and deleted instantly.</p>
 
-        dropZone.addEventListener('click', () => {
-            fileInput.click();
-        });
+            <p><strong>Is this safe for big libraries?</strong></p>
+            <p>Yes — but the browser upload limit is ~100MB. Multi-GB archives will be supported in the desktop app.</p>
+        </section>
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
+    </main>
+</div>
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('drag-over');
-        });
 
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            
-            if (e.dataTransfer.files.length > 0) {
-                const file = e.dataTransfer.files[0];
-                if (file.name.toLowerCase().endsWith('.zip')) {
-                    handleFileSelect(file);
-                }
-            }
-        });
+<script>
+// Advanced settings toggle
+const advancedToggle = document.getElementById('advancedToggle');
+const advancedPanel  = document.getElementById('advancedPanel');
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFileSelect(e.target.files[0]);
-            }
-        });
+advancedToggle.addEventListener('click', () => {
+    advancedPanel.classList.toggle('advanced-panel-open');
+});
 
-        function handleFileSelect(file) {
-            selectedFile = file;
-            document.getElementById('fileName').textContent = file.name;
-            document.getElementById('fileSize').textContent = formatFileSize(file.size);
-            fileInfo.classList.remove('hidden');
-        }
+// Upload & drag/drop wiring
+const dropzone  = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const chooseBtn = document.getElementById('chooseFileBtn');
+const startBtn  = document.getElementById('startProcessingBtn');
 
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
-            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-            return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
-        }
+const useMtimeCheckbox    = document.getElementById('useMtimeFallback');
+const removeNoDateCheckbox = document.getElementById('removeNoDateFiles');
+const useMtimeField       = document.getElementById('useMtimeField');
+const removeNoDateField   = document.getElementById('removeNoDateField');
 
-        uploadBtn.addEventListener('click', async () => {
-            if (!selectedFile) return;
+function enableSubmitIfFileChosen() {
+    startBtn.disabled = !(fileInput.files.length > 0);
+}
 
-            const maxSize = 2 * 1024 * 1024 * 1024;
-            if (selectedFile.size > maxSize) {
-                showError('File size exceeds 2GB limit');
-                return;
-            }
+// click to open file picker
+chooseBtn.addEventListener('click', () => fileInput.click());
 
-            uploadSection.classList.add('hidden');
-            processingSection.classList.remove('hidden');
+// manual selection
+fileInput.addEventListener('change', enableSubmitIfFileChosen);
 
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-            formData.append('use_mtime_fallback', useMtimeFallback.checked ? 'true' : 'false');
-            formData.append('skip_no_metadata', skipNoMetadata.checked ? 'true' : 'false');
+// dragover
+dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('dropzone-hover');
+});
 
-            try {
-                updateProgress(10, 'Uploading...');
-                updateStep(1, true);
+// dragleave
+dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('dropzone-hover');
+});
 
-                const xhr = new XMLHttpRequest();
+// drop
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('dropzone-hover');
 
-                xhr.upload.addEventListener('progress', (e) => {
-                    if (e.lengthComputable) {
-                        const percent = Math.round((e.loaded / e.total) * 30);
-                        updateProgress(percent, 'Uploading...');
-                    }
-                });
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        fileInput.files = e.dataTransfer.files;
+        enableSubmitIfFileChosen();
+    }
+});
 
-                xhr.addEventListener('load', () => {
-                    if (xhr.status === 200) {
-                        updateProgress(40, 'Extracting...');
-                        updateStep(2, true);
+// checkbox → hidden input sync
+useMtimeCheckbox.addEventListener('change', () => {
+    useMtimeField.value = useMtimeCheckbox.checked ? 'true' : 'false';
+});
+removeNoDateCheckbox.addEventListener('change', () => {
+    removeNoDateField.value = removeNoDateCheckbox.checked ? 'true' : 'false';
+});
+</script>
 
-                        setTimeout(() => {
-                            updateProgress(60, 'Fixing metadata...');
-                            updateStep(3, true);
-                        }, 500);
-
-                        setTimeout(() => {
-                            updateProgress(80, 'Organizing...');
-                            updateStep(4, true);
-                        }, 1000);
-
-                        setTimeout(() => {
-                            updateProgress(95, 'Packaging...');
-                            updateStep(5, true);
-                        }, 1500);
-
-                        setTimeout(() => {
-                            updateProgress(100, 'Complete!');
-                            
-                            const exportType = xhr.getResponseHeader('X-Export-Type');
-                            const totalFiles = xhr.getResponseHeader('X-Total-Files');
-                            const fixedFiles = xhr.getResponseHeader('X-Fixed-Files');
-                            const restoredFiles = xhr.getResponseHeader('X-Restored-Files');
-                            const renamedFiles = xhr.getResponseHeader('X-Renamed-Files');
-                            const skippedFiles = xhr.getResponseHeader('X-Skipped-Files');
-
-                            downloadBlob = xhr.response;
-                            showSummary(exportType, totalFiles, fixedFiles, restoredFiles, renamedFiles, skippedFiles);
-                        }, 2000);
-                    } else {
-                        const error = JSON.parse(xhr.responseText);
-                        showError(error.error || 'Processing failed');
-                    }
-                });
-
-                xhr.addEventListener('error', () => {
-                    showError('Network error occurred');
-                });
-
-                xhr.open('POST', '/upload');
-                xhr.responseType = 'blob';
-                xhr.send(formData);
-
-            } catch (error) {
-                showError(error.message);
-            }
-        });
-
-        function updateProgress(percent, text) {
-            document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('progressPercent').textContent = percent + '%';
-            document.getElementById('statusText').textContent = text;
-        }
-
-        function updateStep(step, active) {
-            const stepEl = document.getElementById('step' + step);
-            if (active) {
-                stepEl.classList.remove('border-gray-300');
-                stepEl.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-            }
-        }
-
-        function showSummary(exportType, totalFiles, fixedFiles, restoredFiles, renamedFiles, skippedFiles) {
-            processingSection.classList.add('hidden');
-            summarySection.classList.remove('hidden');
-
-            const exportTypeEl = document.getElementById('exportType');
-            if (exportType === 'google_takeout') {
-                exportTypeEl.innerHTML = `
-                    Google Photos Download
-                    <span class="tooltip-container">
-                        <span class="tooltip-icon">ⓘ</span>
-                        <span class="tooltip-text">Also known as: Google Photos backup, Google Photos archive, Google Photos Takeout ZIP</span>
-                    </span>
-                `;
-            } else {
-                exportTypeEl.innerHTML = `
-                    Apple Photos Export (Unmodified Originals)
-                    <span class="tooltip-container">
-                        <span class="tooltip-icon">ⓘ</span>
-                        <span class="tooltip-text">Also known as: Photos.app Export, Apple Photos library export, iCloud Photos download</span>
-                    </span>
-                `;
-            }
-            
-            document.getElementById('totalFiles').textContent = totalFiles;
-            document.getElementById('fixedFiles').textContent = fixedFiles;
-            document.getElementById('restoredFiles').textContent = restoredFiles;
-            document.getElementById('renamedFiles').textContent = renamedFiles;
-            document.getElementById('skippedFiles').textContent = skippedFiles;
-        }
-
-        function showError(message) {
-            uploadSection.classList.add('hidden');
-            processingSection.classList.add('hidden');
-            summarySection.classList.add('hidden');
-            errorSection.classList.remove('hidden');
-            document.getElementById('errorMessage').textContent = message;
-        }
-
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            if (downloadBlob) {
-                const url = window.URL.createObjectURL(downloadBlob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'fixed_photos.zip';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }
-        });
-
-        resetBtn.addEventListener('click', resetForm);
-        errorResetBtn.addEventListener('click', resetForm);
-
-        function resetForm() {
-            selectedFile = null;
-            downloadBlob = null;
-            fileInput.value = '';
-            fileInfo.classList.add('hidden');
-            uploadSection.classList.remove('hidden');
-            processingSection.classList.add('hidden');
-            summarySection.classList.add('hidden');
-            errorSection.classList.add('hidden');
-            updateProgress(0, 'Uploading...');
-            
-            for (let i = 1; i <= 5; i++) {
-                const stepEl = document.getElementById('step' + i);
-                stepEl.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
-                stepEl.classList.add('border-gray-300');
-            }
-        }
-    </script>
 </body>
 </html>
