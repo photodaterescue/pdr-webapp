@@ -231,87 +231,76 @@ body {
 }
 
 /* ========================================================= */
-/* How It Works Section (3-Card Layout)                      */
+/* How It Works Section (Step Cards - matches main website)  */
 /* ========================================================= */
 
 .section-how-it-works {
+    background: #f2f2ff;
     padding: 48px 20px 56px;
 }
 
-.how-it-works-grid {
+.step-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
-.how-card {
-    background: #ffffff;
+.step-card {
+    background: var(--bg-surface);
     border-radius: var(--radius-card);
-    padding: 28px 24px 32px;
-    text-align: center;
-    border: 1px solid var(--border-subtle);
-    transition: border-color 0.2s ease;
+    padding: 18px 18px 20px;
+    box-shadow: 0 18px 40px rgba(23, 15, 73, 0.08);
+    border: 1px solid #ecebff;
 }
 
-.how-card:hover {
-    border-color: var(--lavender-accent);
-}
-
-.how-card-number {
-    display: inline-flex;
+.step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--lavender-soft);
+    color: var(--lavender-deep);
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: rgba(140, 123, 255, 0.18);
-    color: var(--lavender-accent);
-    font-weight: 700;
-    font-size: 0.95rem;
-    border-radius: 50%;
-    margin-bottom: 16px;
-}
-
-.how-card h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 600;
     margin-bottom: 12px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1;
 }
 
-.how-card p {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    line-height: 1.55;
-    margin-bottom: 14px;
+.step-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+    text-align: center;
+    color: var(--text-main);
 }
 
-.how-card ul {
-    list-style: disc;
-    text-align: left;
-    padding-left: 20px;
-    margin: 0;
-}
-
-.how-card ul li {
-    font-size: 0.88rem;
-    color: var(--text-muted);
+.step-card p {
+    margin: 0 0 10px;
+    font-size: 0.95rem;
     line-height: 1.5;
-    margin-bottom: 6px;
+    color: var(--text-muted);
 }
 
-.how-card ul li:last-child {
+.step-card ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 0.9rem;
+    color: var(--text-soft);
+}
+
+.step-card ul li {
+    margin-bottom: 4px;
+}
+
+.step-card ul li:last-child {
     margin-bottom: 0;
 }
 
-.how-card ul li strong {
+.step-card ul li strong {
     color: var(--text-main);
-}
-
-@media (max-width: 800px) {
-    .how-it-works-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
 }
 
 /* ========================================================= */
