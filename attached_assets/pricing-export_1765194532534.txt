@@ -1,0 +1,583 @@
+================================================================================
+PHOTO DATE RESCUE - PRICING SECTION EXPORT
+For integration into the PhotoMetaFix webapp
+================================================================================
+
+
+================================================================================
+PRICING HTML
+================================================================================
+
+<!-- Lemon Squeezy Script (add to <head>) -->
+<script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+
+<!-- PRICING SECTION -->
+<section id="pricing" class="section section-pricing">
+  <div class="section-inner">
+    <h2 class="section-title section-title-center">PDR Pricing</h2>
+    <p class="section-tagline section-tagline-center">
+      Start with the free web demo. Upgrade when you're ready to restore
+      everything.
+    </p>
+
+    <div class="pricing-grid">
+      <!-- Free -->
+      <article class="pricing-card">
+        <h3 class="plan-name">Free</h3>
+        <p class="plan-price">$0</p>
+        <p class="plan-period">Web preview only</p>
+        <ul class="plan-features">
+          <li>Fix ZIPs up to 100&nbsp;MB in-browser.</li>
+          <li>Instant preview of corrected dates.</li>
+          <li>Works with Google Takeout / iCloud / WhatsApp exports.</li>
+          <li>No install required.</li>
+          <li>Files processed in temporary storage only, then deleted.</li>
+          <li><strong>ZIP files only</strong> (up to 100&nbsp;MB).</li>
+        </ul>
+        <a
+          class="btn btn-primary btn-card"
+          href="https://app.photodaterescue.com"
+          target="_blank"
+          rel="noopener"
+        >
+          Free web demo
+        </a>
+      </article>
+
+      <!-- Monthly -->
+      <article class="pricing-card">
+        <h3 class="plan-name">Monthly</h3>
+        <p class="plan-price">$16.99</p>
+        <p class="plan-period">Full desktop access</p>
+        <ul class="plan-features">
+          <li>Fix unlimited ZIPs and folders.</li>
+          <li>Restore EXIF "Date Taken" + XMP timestamps.</li>
+          <li>Repair WhatsApp / Messenger / social downloads.</li>
+          <li>Correct Google Takeout &amp; Apple Photos exports.</li>
+          <li>Fix HEIC / JPG / PNG / MP4 timestamp issues.</li>
+          <li>Smart renaming for clean timelines.</li>
+          <li>Safe processing — originals untouched.</li>
+          <li>Use on up to <strong>3 devices</strong>.</li>
+        </ul>
+        <a
+          class="btn btn-outline btn-card lemonsqueezy-button"
+          href="https://pay.photodaterescue.com/buy/ea41d61a-40b5-4be1-9130-2a0c3ee94ebb?embed=1"
+        >
+          Buy monthly
+        </a>
+      </article>
+
+      <!-- Yearly -->
+      <article class="pricing-card pricing-card--yearly">
+        <div class="plan-badge">Best value</div>
+        <h3 class="plan-name">Yearly</h3>
+        <p class="plan-price">$99</p>
+        <p class="plan-period">For ongoing, long-term photo care</p>
+        <ul class="plan-features">
+          <li>Everything in Monthly.</li>
+          <li>Ideal for large or growing collections.</li>
+          <li>Receive new features as they're released.</li>
+          <li>Supports large folders (10&nbsp;GB–500&nbsp;GB+).</li>
+          <li>Use on up to <strong>3 devices</strong>.</li>
+        </ul>
+        <a
+          class="btn btn-outline btn-card lemonsqueezy-button"
+          href="https://pay.photodaterescue.com/buy/c6ede893-fa25-4d63-95cf-17d099dfe3f0?embed=1"
+        >
+          Buy yearly
+        </a>
+      </article>
+
+      <!-- Lifetime -->
+      <article class="pricing-card pricing-card--lifetime">
+        <div class="ripple-background">
+          <div class="ripple-ring ring-1"></div>
+          <div class="ripple-ring ring-2"></div>
+          <div class="ripple-ring ring-3"></div>
+          <div class="ripple-ring ring-4"></div>
+        </div>
+        <h3 class="plan-name">Lifetime</h3>
+        <p class="plan-price">$199</p>
+        <p class="plan-period">One-time payment</p>
+        <ul class="plan-features">
+          <li>Everything in Yearly.</li>
+          <li>Permanent access for lifetime of the product.</li>
+          <li>No subscriptions — one payment.</li>
+          <li>Best long-term savings for loyal users.</li>
+          <li>Use on up to <strong>10 devices</strong>.</li>
+        </ul>
+        <p class="lifetime-note">
+          Available only after one successful Monthly or Yearly payment.
+        </p>
+        <button class="btn btn-disabled btn-card" disabled>
+          Unlock after first billing cycle
+        </button>
+      </article>
+    </div>
+
+    <p class="pricing-footnote">
+      Some people fix a single ZIP, export, or Takeout — and never need
+      the tool again. Others fix new batches every year as phones, clouds,
+      and apps evolve. Subscriptions keep the app sustainable and
+      continuously updated, while Lifetime rewards loyal users fairly.
+    </p>
+    <p class="hero-footnote">
+      Web demo: ZIPs up to 100&nbsp;MB. Desktop app: unlimited folders,
+      ZIPs and devices.
+    </p>
+  </div>
+</section>
+
+
+================================================================================
+CSS - THEME VARIABLES & BASE STYLES
+================================================================================
+
+/* ========================================================= */
+/* CSS Variables (Lavender Theme)                            */
+/* ========================================================= */
+
+:root {
+  --bg-page: #f6f6fb;
+  --bg-surface: #ffffff;
+
+  --text-main: #2f2f45;
+  --text-muted: #5b5a75;
+  --text-soft: #7a7a96;
+
+  --lavender: #A99CFF;
+  --lavender-accent: #8C7BFF;
+  --lavender-soft: #efecff;
+  --lavender-deep: #6b5aff;
+  --lavender-hover: #988BF2;
+
+  --accent-gold: #f8c15c;
+
+  --border-subtle: #e1def7;
+  --shadow-card: 0 18px 40px rgba(23, 15, 73, 0.08);
+
+  --radius-card: 18px;
+  --radius-pill: 999px;
+
+  --nav-height: 70px;
+}
+
+/* ========================================================= */
+/* Base Reset & Typography                                   */
+/* ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+  background: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+/* ========================================================= */
+/* Section Layout                                            */
+/* ========================================================= */
+
+.section {
+  padding: 80px 20px;
+}
+
+.section-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
+}
+
+.section-title-center {
+  text-align: center;
+}
+
+.section-tagline {
+  margin: 0 0 48px;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-tagline-center {
+  text-align: center;
+}
+
+/* ========================================================= */
+/* Buttons                                                   */
+/* ========================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--lavender);
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(108, 99, 255, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--lavender-hover);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--lavender-deep);
+  border-color: var(--lavender-accent);
+}
+
+.btn-outline:hover {
+  background: var(--lavender-soft);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.btn-disabled {
+  background: #f1f1fb;
+  color: #a9a9c5;
+  border-color: #d9d9f0;
+  cursor: default;
+  box-shadow: none;
+}
+
+.btn-card {
+  width: 100%;
+  margin-top: 10px;
+}
+
+
+================================================================================
+CSS - PRICING SECTION STYLES
+================================================================================
+
+/* ========================================================= */
+/* Pricing Section                                           */
+/* ========================================================= */
+
+.section-pricing {
+  background: var(--bg-page);
+}
+
+.pricing-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-top: 26px;
+}
+
+.pricing-card {
+  position: relative;
+  background: var(--bg-surface);
+  border-radius: var(--radius-card);
+  padding: 20px 18px 18px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--lavender);
+}
+
+.plan-name {
+  text-align: center;
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+}
+
+.plan-price {
+  text-align: center;
+  font-size: 1.6rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.plan-period {
+  text-align: center;
+  margin: 2px 0 12px;
+  font-size: 0.88rem;
+  color: var(--text-soft);
+}
+
+.plan-features {
+  list-style: disc;
+  padding-left: 18px;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  flex-grow: 1;
+}
+
+.plan-features li+li {
+  margin-top: 4px;
+}
+
+/* ========================================================= */
+/* Yearly Card (with "Best value" badge)                     */
+/* ========================================================= */
+
+.pricing-card--yearly {
+  background: #FFF8E6;
+}
+
+.pricing-card--yearly .plan-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  right: auto;
+  background: var(--lavender);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.pricing-card--yearly .plan-badge:hover {
+  background: var(--lavender-hover);
+  box-shadow: 0 0 0 3px rgba(140, 123, 255, 0.3);
+}
+
+/* Specific button styling for Yearly */
+.pricing-card--yearly .btn-outline {
+  background: var(--lavender);
+  color: #ffffff;
+  border: 1px solid var(--lavender-accent);
+  box-shadow: 0 8px 20px rgba(140, 123, 255, 0.3);
+}
+
+.pricing-card--yearly .btn-outline:hover {
+  background: var(--lavender-hover);
+  color: #ffffff;
+  border-color: var(--lavender-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(140, 123, 255, 0.4);
+}
+
+/* ========================================================= */
+/* Lifetime Card (with ripple effect)                        */
+/* ========================================================= */
+
+.pricing-card--lifetime {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  z-index: 1;
+  border-color: rgba(183, 124, 255, 0.3);
+}
+
+/* Ensure content sits above ripples */
+.pricing-card--lifetime > *:not(.ripple-background) {
+  position: relative;
+  z-index: 5;
+}
+
+.ripple-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ripple-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 28px;
+  border: 1px solid transparent;
+}
+
+/* Ring 1 (Innermost) */
+.ring-1 {
+  width: 65%;
+  height: 60%;
+  border-color: rgba(248, 193, 92, 0.5);
+  box-shadow: 
+    0 8px 24px rgba(248, 193, 92, 0.5),
+    inset 0 2px 16px rgba(255, 255, 255, 0.8);
+}
+
+/* Ring 2 */
+.ring-2 {
+  width: 80%;
+  height: 75%;
+  border-color: rgba(183, 124, 255, 0.35);
+  box-shadow: 
+    0 12px 32px rgba(183, 124, 255, 0.3),
+    inset 0 2px 16px rgba(255, 255, 255, 0.6);
+}
+
+/* Ring 3 */
+.ring-3 {
+  width: 95%;
+  height: 90%;
+  border-color: rgba(248, 193, 92, 0.3);
+  box-shadow: 
+    0 16px 40px rgba(248, 193, 92, 0.2),
+    inset 0 2px 24px rgba(255, 255, 255, 0.5);
+}
+
+/* Ring 4 (Outermost) */
+.ring-4 {
+  width: 110%;
+  height: 105%;
+  border-color: rgba(183, 124, 255, 0.2);
+  box-shadow: 
+    0 20px 48px rgba(183, 124, 255, 0.15),
+    inset 0 2px 30px rgba(255, 255, 255, 0.4);
+}
+
+/* Specific button styling for Lifetime Unlock */
+.pricing-card--lifetime .btn-disabled {
+  background: #f8f8fc;
+  color: var(--text-main);
+  border: 1px solid var(--lavender);
+  opacity: 0.6;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.lifetime-note {
+  margin-top: 12px;
+  margin-bottom: 2px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  text-align: center;
+  font-style: italic;
+  position: relative;
+  z-index: 5;
+}
+
+/* ========================================================= */
+/* Pricing Footnotes                                         */
+/* ========================================================= */
+
+.pricing-footnote {
+  margin-top: 22px;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  text-align: center;
+}
+
+.section-pricing .hero-footnote {
+  text-align: center;
+}
+
+.hero-footnote {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+
+================================================================================
+CSS - RESPONSIVE BREAKPOINTS
+================================================================================
+
+@media (max-width: 900px) {
+  .section {
+    padding: 60px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 46px 16px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .section-tagline {
+    font-size: 1rem;
+    margin-bottom: 32px;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .pricing-card--yearly {
+    margin-top: 12px; /* Extra space for badge on mobile */
+  }
+}
+
+
+================================================================================
+INTEGRATION NOTES
+================================================================================
+
+1. LEMON SQUEEZY MODAL
+   The "Buy monthly" and "Buy yearly" buttons use the Lemon Squeezy checkout
+   modal. Add this script to your <head>:
+   
+   <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+   
+   The `lemonsqueezy-button` class triggers the modal overlay.
+
+2. FOR REACT APPS
+   Create a PricingSection component and use className instead of class.
+   The ripple-background divs create the decorative effect on the Lifetime card.
+
+3. SPACING
+   The section uses 80px top/bottom padding on desktop, scaling down on mobile.
+   Container max-width is 1120px, centered with auto margins.
+
+4. CARD HOVER EFFECTS
+   Cards lift and scale slightly on hover with a lavender border highlight.
+
+
+================================================================================
+END OF EXPORT
+================================================================================

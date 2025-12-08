@@ -827,255 +827,304 @@ p {
 }
 
 
+/* ========================================================= */
+/* Section Layout                                            */
+/* ========================================================= */
 
-/* ========================= */
-/* Pricing Section           */
-/* ========================= */
-
-.pricing-section {
-    margin-top: 60px;
-    text-align: center;
+.section {
+  padding: 80px 20px;
 }
 
-.pricing-title {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 24px; 
-    color: #22213a;
+.section-inner {
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
-/* REMOVE DUPLICATE SUBTEXT — DO NOT USE ANYWHERE */
-.pricing-subtitle { 
-    display: none !important; 
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
 }
 
-/* ---------- Pricing Grid ---------- */
+.section-title-center {
+  text-align: center;
+}
+
+.section-tagline {
+  margin: 0 0 48px;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-tagline-center {
+  text-align: center;
+}
+
+/* ========================================================= */
+/* Pricing Section                                           */
+/* ========================================================= */
+
+.section-pricing {
+  background: var(--bg-page);
+}
+
 .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 26px;
-    max-width: 1000px;
-    margin: 0 auto;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-top: 26px;
 }
 
-/* ---------- Lifetime Row ---------- */
-.pricing-grid-lifetime {
-    display: flex;
-    justify-content: center;
-    margin-top: 18px;
-}
-
-/* ---------- Card ---------- */
 .pricing-card {
-    background: #ffffff;
-    border: 1px solid rgba(150, 140, 255, 0.20);
-    border-radius: 18px;
-    padding: 32px;
-    text-align: center;
-    box-shadow:
-        0px 3px 10px rgba(120, 110, 255, 0.12),
-        0px 6px 16px rgba(120, 110, 255, 0.08);
-    transition: transform .25s ease, box-shadow .28s ease;
-
-    /* ===== FIX ADDED ===== */
-    display: flex;
-    flex-direction: column;
+  position: relative;
+  background: var(--bg-surface);
+  border-radius: var(--radius-card);
+  padding: 20px 18px 18px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s ease;
 }
 
 .pricing-card:hover {
-    transform: translateY(-4px);
-    box-shadow:
-        0px 6px 18px rgba(120, 110, 255, 0.14),
-        0px 12px 30px rgba(120, 110, 255, 0.10);
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--lavender);
 }
 
-/* ---------- Soft pastel tints + coloured outlines ---------- */
-
-/* Free - white card, green outline */
-.pricing-free { 
-    background: #ffffff;
-    border-color: #7fdc9a;
-}
-
-/* Monthly - white card, lavender outline */
-.pricing-monthly { 
-    background: #ffffff;
-    border-color: #b7a4ff;
-}
-
-/* Yearly - very faint pastel yellow, orange outline */
-.pricing-yearly { 
-    position: relative;
-    background: #fffbe8;     
-    border-color: #ffae4e;
-
-    /* ===== FIX ADDED (was 40px) ===== */
-    padding-top: 24px;
-}
-
-/* Floating pill (Adobe style) */
-.pricing-yearly .best-value-badge {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: 0;
-}
-
-/* Lifetime */
-.pricing-lifetime { 
-    background: #fff4dd;
-    border-color: #f4b996;
-    padding: 24px 28px;
-}
-
-/* ---------- Titles / Prices ---------- */
-.plan-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: #22213a;
+.plan-name {
+  text-align: center;
+  margin: 0 0 4px;
+  font-size: 1.05rem;
 }
 
 .plan-price {
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin-bottom: 4px;
-    color: #22213a;
+  text-align: center;
+  font-size: 1.6rem;
+  margin: 0;
+  font-weight: 700;
 }
 
-.plan-interval {
-    font-size: 0.95rem;
-    color: #5b5772;
-    margin-bottom: 18px;
+.plan-period {
+  text-align: center;
+  margin: 2px 0 12px;
+  font-size: 0.88rem;
+  color: var(--text-soft);
 }
 
-/* ---------- Features ---------- */
-.pricing-features {
-    list-style: disc;
-    text-align: left;
-    margin: 0 auto 22px;
-    padding-left: 20px;
-    max-width: 250px;
-
-    /* ===== FIX ADDED ===== */
-    flex: 1;
+.plan-features {
+  list-style: disc;
+  padding-left: 18px;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  flex-grow: 1;
 }
 
-.pricing-features li {
-    margin-bottom: 10px;
-    font-size: 0.94rem;
-    color: #2f2f41;
-    line-height: 1.45;
+.plan-features li+li {
+  margin-top: 4px;
 }
 
-.pricing-lifetime .pricing-features {
-    margin-bottom: 16px;
+/* ========================================================= */
+/* Yearly Card (with "Best value" badge)                     */
+/* ========================================================= */
+
+.pricing-card--yearly {
+  background: #FFF8E6;
 }
 
-/* ---------- Best Value ---------- */
-.best-value-badge {
-    background: #ffae4e;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 700;
+.pricing-card--yearly .plan-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  right: auto;
+  background: var(--lavender);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
 }
 
-/* ---------- Buttons ---------- */
-
-/* Wrapper ensures horizontal alignment */
-.pricing-btn-wrapper,
-.pricing-btn-container {
-    /* ===== FIXED wrapper ===== */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 12px;
+.pricing-card--yearly .plan-badge:hover {
+  background: var(--lavender-hover);
+  box-shadow: 0 0 0 3px rgba(140, 123, 255, 0.3);
 }
 
-/* REMOVE height constraints from previous version */
-.pricing-btn-container {
-    /* cleaned to allow flex to work */
+.pricing-card--yearly .btn-outline {
+  background: var(--lavender);
+  color: #ffffff;
+  border: 1px solid var(--lavender-accent);
+  box-shadow: 0 8px 20px rgba(140, 123, 255, 0.3);
 }
 
-/* Base button */
-.pricing-btn {
-    padding: 10px 22px;
-    border-radius: 10px;
-    font-size: 0.92rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background .25s ease, transform .25s ease;
-    box-shadow: 0 4px 10px rgba(60, 64, 67, 0.14);
-    border: 2px solid transparent;
+.pricing-card--yearly .btn-outline:hover {
+  background: var(--lavender-hover);
+  color: #ffffff;
+  border-color: var(--lavender-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(140, 123, 255, 0.4);
 }
 
-/* Free button */
-.pricing-btn-free {
-    background: #ffffff;
-    color: #000000;
-    border-color: #7fdc9a;
-}
-.pricing-btn-free:hover {
-    background: #f5fff8;
+/* ========================================================= */
+/* Lifetime Card (with ripple effect)                        */
+/* ========================================================= */
+
+.pricing-card--lifetime {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  z-index: 1;
+  border-color: rgba(183, 124, 255, 0.3);
 }
 
-/* Monthly */
-.pricing-btn-monthly {
-    background: #f6f2ff;
-    color: #000000;
-    border-color: #b7a4ff;
-}
-.pricing-btn-monthly:hover {
-    background: #ece4ff;
+.pricing-card--lifetime > *:not(.ripple-background) {
+  position: relative;
+  z-index: 5;
 }
 
-/* Yearly */
-.pricing-btn-yearly {
-    background: #ffae4e;
-    color: #ffffff;
-    border-color: #ffae4e;
-}
-.pricing-btn-yearly:hover {
-    background: #ffa138;
-}
-
-/* Locked Lifetime button */
-.pricing-btn-locked {
-    background: #f1f1f1 !important;
-    color: #000000 !important;
-    border: 2px solid #e8a3a3 !important;
-    cursor: not-allowed !important;
-    pointer-events: none !important;
-    opacity: 0.9;
+.ripple-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
 }
 
-/* ---------- Lifetime note ---------- */
+.ripple-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 28px;
+  border: 1px solid transparent;
+}
+
+.ring-1 {
+  width: 65%;
+  height: 60%;
+  border-color: rgba(248, 193, 92, 0.5);
+  box-shadow: 
+    0 8px 24px rgba(248, 193, 92, 0.5),
+    inset 0 2px 16px rgba(255, 255, 255, 0.8);
+}
+
+.ring-2 {
+  width: 80%;
+  height: 75%;
+  border-color: rgba(183, 124, 255, 0.35);
+  box-shadow: 
+    0 12px 32px rgba(183, 124, 255, 0.3),
+    inset 0 2px 16px rgba(255, 255, 255, 0.6);
+}
+
+.ring-3 {
+  width: 95%;
+  height: 90%;
+  border-color: rgba(248, 193, 92, 0.3);
+  box-shadow: 
+    0 16px 40px rgba(248, 193, 92, 0.2),
+    inset 0 2px 24px rgba(255, 255, 255, 0.5);
+}
+
+.ring-4 {
+  width: 110%;
+  height: 105%;
+  border-color: rgba(183, 124, 255, 0.2);
+  box-shadow: 
+    0 20px 48px rgba(183, 124, 255, 0.15),
+    inset 0 2px 30px rgba(255, 255, 255, 0.4);
+}
+
+.pricing-card--lifetime .btn-disabled {
+  background: #f8f8fc;
+  color: var(--text-main);
+  border: 1px solid var(--lavender);
+  opacity: 0.6;
+  font-weight: 600;
+  box-shadow: none;
+}
+
 .lifetime-note {
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 10px;
+  margin-top: 12px;
+  margin-bottom: 2px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  text-align: center;
+  font-style: italic;
+  position: relative;
+  z-index: 5;
 }
 
-/* ---------- Footer note ---------- */
-.pricing-footer-note {
-    margin-top: 26px;
-    font-size: 0.88rem;
-    color: #59586c;
-    max-width: 680px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.45;
+/* ========================================================= */
+/* Pricing Footnotes                                         */
+/* ========================================================= */
+
+.pricing-footnote {
+  margin-top: 22px;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  text-align: center;
 }
 
-/* ---------- Responsive ---------- */
-@media (max-width: 840px) {
-    .pricing-grid {
-        grid-template-columns: 1fr;
-    }
+.section-pricing .hero-footnote {
+  text-align: center;
 }
+
+.hero-footnote {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+/* ========================================================= */
+/* Pricing Responsive                                        */
+/* ========================================================= */
+
+@media (max-width: 900px) {
+  .section {
+    padding: 60px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 46px 16px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .section-tagline {
+    font-size: 1rem;
+    margin-bottom: 32px;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .pricing-card--yearly {
+    margin-top: 12px;
+  }
+}
+
 
 /* ========================= */
 /* Comparison Section        */

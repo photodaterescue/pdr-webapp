@@ -33,6 +33,16 @@ The application provides:
 - 2GB file size limit
 
 ## Recent Changes
+- 2025-12-08: Major UI update - Matched pricing cards and navigation with main website
+  - Replaced entire pricing section with new design from photodaterescue.com
+  - Added section layout styles (.section, .section-inner, .section-tagline)
+  - New pricing card styles with yearly "Best value" badge and lifetime ripple effect
+  - Updated plan naming (.plan-name, .plan-period, .plan-features)
+  - Fixed "Get desktop app" button to open Yearly-only LemonSqueezy modal
+  - Navigation links now point to correct main website URLs
+  - Removed old pricing styles and JavaScript to prevent conflicts
+  - LemonSqueezy script moved to head for global availability
+
 - 2025-12-08: Integrated shared header/footer from main website
   - Added sticky site-header with brand, navigation, and CTA button
   - Added site-footer with copyright and links to main website
