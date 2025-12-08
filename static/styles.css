@@ -237,6 +237,7 @@ body {
 .section-how-it-works {
     background: #f2f2ff;
     padding: 48px 20px 56px;
+    margin-top: 48px;
 }
 
 .step-grid {
