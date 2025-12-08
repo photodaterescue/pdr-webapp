@@ -226,8 +226,8 @@ body {
 .webapp-content {
     max-width: 980px;
     margin: 0 auto;
-    padding: 40px 20px;
-    min-height: calc(100vh - var(--nav-height) - 60px);
+    padding: 40px 20px 24px;
+    min-height: auto;
 }
 
 /* ========================================================= */
@@ -237,7 +237,7 @@ body {
 .section-how-it-works {
     background: #f2f2ff;
     padding: 48px 20px 56px;
-    margin-top: 48px;
+    margin-top: 0;
 }
 
 .step-grid {
