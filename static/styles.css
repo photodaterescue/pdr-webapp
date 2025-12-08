@@ -231,6 +231,99 @@ body {
 }
 
 /* ========================================================= */
+/* How It Works Section (3-Card Layout)                      */
+/* ========================================================= */
+
+.how-it-works-section {
+    margin: 48px 0 56px;
+    text-align: center;
+}
+
+.how-it-works-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.how-it-works-section .section-tagline {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+}
+
+.how-it-works-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.how-card {
+    background: var(--lavender-soft);
+    border-radius: var(--radius-card);
+    padding: 28px 24px 32px;
+    text-align: center;
+    border: 1px solid var(--border-subtle);
+}
+
+.how-card-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(140, 123, 255, 0.18);
+    color: var(--lavender-accent);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 50%;
+    margin-bottom: 16px;
+}
+
+.how-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.how-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 14px;
+}
+
+.how-card ul {
+    list-style: disc;
+    text-align: left;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.how-card ul li {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+.how-card ul li:last-child {
+    margin-bottom: 0;
+}
+
+.how-card ul li strong {
+    color: var(--text-main);
+}
+
+@media (max-width: 800px) {
+    .how-it-works-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* ========================================================= */
 /* Header/Footer Responsive                                  */
 /* ========================================================= */
 
