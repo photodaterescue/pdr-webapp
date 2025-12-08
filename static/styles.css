@@ -234,24 +234,8 @@ body {
 /* How It Works Section (3-Card Layout)                      */
 /* ========================================================= */
 
-.how-it-works-section {
-    margin: 48px auto 56px;
-    text-align: center;
-    max-width: 1120px;
-    padding: 0 20px;
-}
-
-.how-it-works-section h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 8px;
-}
-
-.how-it-works-section .section-tagline {
-    font-size: 1rem;
-    color: var(--text-muted);
-    margin-bottom: 32px;
+.section-how-it-works {
+    padding: 48px 20px 56px;
 }
 
 .how-it-works-grid {
