@@ -66,60 +66,10 @@
             Fix wrong photo dates from any device, app, or cloud — instantly.
         </p>
 
-        <div class="hero-rotator">
-            <p id="hero-phrase" class="hero-phrase"></p>
-            <div class="hero-controls">
-                <div id="hero-dots" class="hero-dots"></div>
-            </div>
-        </div>
-
         <p class="privacy-banner">
             🔒 100% Private — web preview is temporary, desktop runs entirely on your own computer.
         </p>
     </div>
-
-
-
-        <!-- ========================= -->
-        <!-- Why Your Dates Matter     -->
-        <!-- ========================= -->
-
-        <section class="card info-card why-card">
-            <h2 class="why-title">Why Your Photo Dates Must Be Correct</h2>
-            <p class="why-lead">
-                Messy or missing dates ruin albums, timelines, search and memories — restoring them instantly makes your entire photo library make sense again.
-            </p>
-
-            <div class="why-grid">
-                <div class="why-col">
-                    <h3 class="why-subheading">✨ Why It Matters to You</h3>
-                    <ul class="why-list">
-                        <li>Make your albums look perfect again.</li>
-                        <li>Find important memories instantly again.</li>
-                        <li>Rebuild your life story in the right order.</li>
-                        <li>Make printed gifts and photobooks without stress.</li>
-                        <li>Fix old scanned childhood photos.</li>
-                        <li>Organize loved ones’ archives after they pass.</li>
-                        <li>Stop losing favorite photos in the chaos.</li>
-                        <li>Make your gallery feel calm, not overwhelming.</li>
-                    </ul>
-                </div>
-
-                <div class="why-col">
-                    <h3 class="why-subheading">🛠 Why It Happens (and How We Fix It)</h3>
-                    <ul class="why-list">
-                        <li>Your cloud library stays untouched — fixes on copies only.</li>
-                        <li>Photos display correctly in Google Photos &amp; iCloud.</li>
-                        <li>EXIF “Date Taken / Original” is fully restored.</li>
-                        <li>Removes “today’s date” errors from exports.</li>
-                        <li>Fixes WhatsApp, Messenger &amp; social downloads.</li>
-                        <li>Powers accurate AI Memories &amp; People grouping.</li>
-                        <li>Works across iPhone / Android / Mac / Windows.</li>
-                        <li>Prevents duplicates and broken timelines caused by bad dates.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
         
         <!-- ========================= -->
         <!-- 2. Upload Card            -->
@@ -767,49 +717,6 @@ No duplicates were removed from this ZIP.
 
     resetBtn.addEventListener('click', resetForm);
     errorResetBtn.addEventListener('click', resetForm);
-
-
-    // =======================
-    // HERO ROTATOR
-    // =======================
-    const phrases = [
-        "Restore real photo dates from Google, Apple, WhatsApp, OneDrive and more.",
-        "Make your chaotic photo library finally make sense again.",
-        "Undo years of broken timestamps across clouds, phones, and apps.",
-        "Clean, correct dates for every photo you’ve ever backed up or downloaded.",
-        "Fix Google, Apple, WhatsApp, OneDrive and old scans — all in one click.",
-        "Bring order to years of mixed Android + iPhone timelines in seconds.",
-        "Fix photos spread across multiple Google accounts, exports, and old device backups.",
-        "Repair every bad timestamp created by Takeout exports, app downloads, or file transfers.",
-        "Make decades of photos appear in the right order — everywhere.",
-        "Turn messy folders into a clean, reliable photo history."
-    ];
-
-    let idx = 0;
-    const heroEl = document.getElementById("hero-phrase");
-    const dotsContainer = document.getElementById("hero-dots");
-
-    function renderDots() {
-        dotsContainer.innerHTML = "";
-        phrases.forEach((_, i) => {
-            const dot = document.createElement("div");
-            dot.className = "hero-dot" + (i === idx ? " active" : "");
-            dotsContainer.appendChild(dot);
-        });
-    }
-
-    function showPhrase() {
-        heroEl.style.opacity = 0;
-        setTimeout(() => {
-            heroEl.textContent = phrases[idx];
-            heroEl.style.opacity = 1;
-            renderDots();
-        }, 800);
-    }
-
-    setInterval(() => {
-        idx = (idx + 1) % phrases.length;
-        showPhrase();
     }, 20000);
 
     showPhrase();
