@@ -304,6 +304,20 @@ body {
     color: var(--text-main);
 }
 
+/* Zero-decision workflow note */
+.auto-note {
+    color: var(--lavender-deep);
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-top: 6px;
+    opacity: 0.85;
+}
+
+/* Pricing section spacing */
+section#pricing {
+    margin-top: 48px;
+}
+
 /* ========================================================= */
 /* Header/Footer Responsive                                  */
 /* ========================================================= */
