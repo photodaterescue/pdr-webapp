@@ -33,6 +33,14 @@ The application provides:
 - 2GB file size limit
 
 ## Recent Changes
+- 2025-12-08: Integrated shared header/footer from main website
+  - Added sticky site-header with brand, navigation, and CTA button
+  - Added site-footer with copyright and links to main website
+  - Added CSS variables for lavender theme consistency
+  - Replaced old in-page header with new design matching photodaterescue.com
+  - Responsive navigation (hides on mobile, shows CTA button)
+  - All nav links point to main website sections
+
 - 2025-11-17: Branding update and final UX refinements
   - **Rebranded to "Photo Date Rescue"** - More user-friendly, memorable name
   - **Updated terminology** - "Google Photos downloads" instead of "Takeout" throughout

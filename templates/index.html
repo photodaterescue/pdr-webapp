@@ -21,32 +21,50 @@
     <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body>
-<div class="page">
 
-
-
-
-    <!-- ========================= -->
-    <!-- 1. Header (Hero Section)  -->
-    <!-- ========================= -->
-    <header class="header">
-
-        <div class="title-with-logo">
-            <img 
+<!-- ========================= -->
+<!-- Site Header               -->
+<!-- ========================= -->
+<header class="site-header">
+    <div class="nav-inner">
+        <a href="https://photodaterescue.com" class="brand">
+            <img
                 src="/static/pdr-logo_transparent.png"
-                alt="Photo Date Rescue Icon"
-                class="title-logo"
+                alt="Photo Date Rescue logo"
+                class="brand-mark"
             />
-            <h1 class="app-title">Photo Date Rescue</h1>
-        </div>
+            <span class="brand-wordmark">Photo Date Rescue</span>
+        </a>
 
+        <nav class="primary-nav">
+            <a href="https://photodaterescue.com/#how-it-works">How it works</a>
+            <a href="https://photodaterescue.com/#pricing">Pricing</a>
+            <a href="https://photodaterescue.com/#guides">Guides</a>
+            <a href="https://photodaterescue.com/#faq">FAQ</a>
+            <a href="https://photodaterescue.com/#partners">Affiliates</a>
+            <a href="https://photodaterescue.com/#support">Support</a>
+        </nav>
+
+        <div class="nav-cta">
+            <a class="btn btn-outline" href="https://photodaterescue.com/#pricing">Get desktop app</a>
+        </div>
+    </div>
+</header>
+
+<!-- ========================= -->
+<!-- Main Webapp Content       -->
+<!-- ========================= -->
+<main class="webapp-content">
+
+    <!-- Hero Section -->
+    <div class="hero-section" style="text-align: center; margin-bottom: 32px;">
+        <h1 class="app-title" style="font-size: 2.4rem; font-weight: 800; margin-bottom: 8px;">Fix broken photo dates</h1>
         <p class="hero-static-label">
             Fix wrong photo dates from any device, app, or cloud — instantly.
         </p>
 
         <div class="hero-rotator">
             <p id="hero-phrase" class="hero-phrase"></p>
-
             <div class="hero-controls">
                 <div id="hero-dots" class="hero-dots"></div>
             </div>
@@ -55,12 +73,7 @@
         <p class="privacy-banner">
             🔒 100% Private — web preview is temporary, desktop runs entirely on your own computer.
         </p>
-
-    </header>
-
-
-
-<main class="main">
+    </div>
 
 
 
@@ -1023,8 +1036,29 @@ No duplicates were removed from this ZIP.
         );
     </script>
 
+</main>
 
-
+<!-- ========================= -->
+<!-- Site Footer               -->
+<!-- ========================= -->
+<footer class="site-footer">
+    <div class="footer-inner">
+        <p>&copy; 2025 Photo Date Rescue. All rights reserved.</p>
+        <nav class="footer-nav">
+            <a href="https://photodaterescue.com">Homepage</a>
+            <span>&middot;</span>
+            <a href="https://photodaterescue.com/#how-it-works">How it works</a>
+            <span>&middot;</span>
+            <a href="https://photodaterescue.com/#pricing">Pricing</a>
+            <span>&middot;</span>
+            <a href="https://photodaterescue.com/#guides">Guides</a>
+            <span>&middot;</span>
+            <a href="https://photodaterescue.com/#faq">FAQ</a>
+            <span>&middot;</span>
+            <a href="https://photodaterescue.com/#partners">Affiliates</a>
+        </nav>
+    </div>
+</footer>
 
 </body>
 </html>

@@ -1,0 +1,452 @@
+================================================================================
+PHOTO DATE RESCUE - HEADER & FOOTER EXPORT
+For integration into the PhotoMetaFix webapp
+================================================================================
+
+This file contains all the HTML and CSS needed to integrate the shared header
+and footer from the main website into the webapp project.
+
+================================================================================
+ASSET LOCATIONS
+================================================================================
+
+Logo file: /assets/pdr-logo-circle.png
+  - 32x32px circular logo
+  - Used in the header brand area
+  - Copy this file to your webapp's public/assets folder
+
+Favicon: /favicon.png
+  - Used for browser tab icon
+
+
+================================================================================
+HEADER HTML
+================================================================================
+
+<header class="site-header">
+  <div class="nav-inner">
+
+    <!-- Brand (logo + wordmark) -->
+    <a href="https://photodaterescue.com" class="brand">
+      <img
+        src="/assets/pdr-logo-circle.png"
+        alt="Photo Date Rescue logo"
+        class="brand-mark"
+      />
+      <span class="brand-wordmark">Photo Date Rescue</span>
+    </a>
+
+    <!-- Primary navigation - links to main website sections -->
+    <nav class="primary-nav">
+      <a href="https://photodaterescue.com/#how-it-works">How it works</a>
+      <a href="https://photodaterescue.com/#pricing">Pricing</a>
+      <a href="https://photodaterescue.com/#guides">Guides</a>
+      <a href="https://photodaterescue.com/#faq">FAQ</a>
+      <a href="https://photodaterescue.com/#partners">Affiliates</a>
+      <a href="https://photodaterescue.com/#support">Support</a>
+    </nav>
+
+    <!-- Top-right CTAs -->
+    <div class="nav-cta">
+      <a class="btn btn-outline" href="https://photodaterescue.com/#pricing">Get desktop app</a>
+    </div>
+
+  </div>
+</header>
+
+
+================================================================================
+FOOTER HTML
+================================================================================
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>&copy; 2025 Photo Date Rescue. All rights reserved.</p>
+    <nav class="footer-nav">
+      <a href="https://photodaterescue.com">Homepage</a>
+      <span>&middot;</span>
+      <a href="https://photodaterescue.com/#how-it-works">How it works</a>
+      <span>&middot;</span>
+      <a href="https://photodaterescue.com/#pricing">Pricing</a>
+      <span>&middot;</span>
+      <a href="https://photodaterescue.com/#guides">Guides</a>
+      <span>&middot;</span>
+      <a href="https://photodaterescue.com/#faq">FAQ</a>
+      <span>&middot;</span>
+      <a href="https://photodaterescue.com/#partners">Affiliates</a>
+    </nav>
+  </div>
+</footer>
+
+
+================================================================================
+CSS - COMPLETE STYLES
+================================================================================
+
+Paste ALL of the following CSS into your webapp's stylesheet.
+This includes CSS variables, base styles, header, footer, buttons, and responsive rules.
+
+--------------------------------------------------------------------------------
+
+/* ========================================================= */
+/* CSS Variables (Lavender Theme)                            */
+/* ========================================================= */
+
+:root {
+  --bg-page: #f6f6fb;
+  --bg-surface: #ffffff;
+
+  --text-main: #2f2f45;
+  --text-muted: #5b5a75;
+  --text-soft: #7a7a96;
+
+  --lavender: #A99CFF;
+  --lavender-accent: #8C7BFF;
+  --lavender-soft: #efecff;
+  --lavender-deep: #6b5aff;
+  --lavender-hover: #988BF2;
+
+  --accent-gold: #f8c15c;
+
+  --border-subtle: #e1def7;
+  --shadow-card: 0 18px 40px rgba(23, 15, 73, 0.08);
+
+  --radius-card: 18px;
+  --radius-pill: 999px;
+
+  --nav-height: 70px;
+}
+
+/* ========================================================= */
+/* Base Reset & Typography                                   */
+/* ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+  background: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+/* So anchor targets aren't hidden behind sticky header */
+[id] {
+  scroll-margin-top: calc(var(--nav-height) + 16px);
+}
+
+/* ========================================================= */
+/* Header / Navigation                                       */
+/* ========================================================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(18px);
+  background: rgba(246, 246, 251, 0.9);
+  border-bottom: 1px solid rgba(214, 210, 246, 0.8);
+}
+
+.nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-logo {
+  height: 28px;
+  display: block;
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.brand-wordmark {
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 0.92rem;
+}
+
+.primary-nav a {
+  text-decoration: none;
+  color: var(--text-soft);
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.2s ease;
+}
+
+.primary-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, var(--lavender-accent), var(--accent-gold));
+  transition: width 0.22s ease;
+}
+
+.primary-nav a:hover {
+  color: var(--lavender-deep);
+}
+
+.primary-nav a:hover::after {
+  width: 100%;
+}
+
+.nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ========================================================= */
+/* Buttons                                                   */
+/* ========================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--lavender);
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(108, 99, 255, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--lavender-hover);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--lavender-deep);
+  border-color: var(--lavender-accent);
+}
+
+.btn-outline:hover {
+  background: var(--lavender-soft);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* ========================================================= */
+/* Footer                                                     */
+/* ========================================================= */
+
+.site-footer {
+  border-top: 1px solid rgba(214, 210, 246, 0.8);
+  padding: 14px 20px 18px;
+  background: rgba(246, 246, 251, 0.98);
+}
+
+.footer-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.footer-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-nav a {
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  color: var(--lavender-deep);
+}
+
+/* ========================================================= */
+/* Responsive Breakpoints                                    */
+/* ========================================================= */
+
+@media (max-width: 900px) {
+  .nav-inner {
+    gap: 12px;
+  }
+
+  .primary-nav {
+    display: none;
+    /* Hide nav links on tablet/mobile */
+  }
+
+  .nav-cta {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-cta {
+    gap: 6px;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .footer-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+
+================================================================================
+INTEGRATION NOTES FOR WEBAPP
+================================================================================
+
+1. REMOVE OLD HEADER CONTENT
+   - Remove the existing logo display in the webapp
+   - Remove the existing "Photo Date Rescue" title/heading
+   - Remove any legacy navigation components
+   - The new header provides all branding
+
+2. PAGE STRUCTURE
+   Your webapp should follow this structure:
+
+   <body>
+     <header class="site-header">...</header>
+     
+     <main class="webapp-content">
+       <!-- Your drag-and-drop component goes here -->
+       <!-- Keep it centered with max-width and margin: 0 auto -->
+     </main>
+     
+     <footer class="site-footer">...</footer>
+   </body>
+
+3. MAIN CONTENT WRAPPER
+   Add this CSS for your main webapp content area:
+
+   .webapp-content {
+     max-width: 1120px;
+     margin: 0 auto;
+     padding: 40px 20px;
+     min-height: calc(100vh - var(--nav-height) - 60px);
+   }
+
+4. LINKS
+   - Header nav links point to the main website (photodaterescue.com)
+   - Footer links also point to the main website
+   - The "Get desktop app" button links to pricing section
+
+5. COPY THE LOGO FILE
+   Copy /assets/pdr-logo-circle.png from this project to your webapp's
+   public/assets/ folder (create the folder if needed)
+
+6. FOR REACT APPS
+   If your webapp uses React, create a SharedHeader and SharedFooter component:
+
+   // SharedHeader.tsx
+   export function SharedHeader() {
+     return (
+       <header className="site-header">
+         <div className="nav-inner">
+           <a href="https://photodaterescue.com" className="brand">
+             <img src="/assets/pdr-logo-circle.png" alt="Photo Date Rescue logo" className="brand-mark" />
+             <span className="brand-wordmark">Photo Date Rescue</span>
+           </a>
+           <nav className="primary-nav">
+             <a href="https://photodaterescue.com/#how-it-works">How it works</a>
+             <a href="https://photodaterescue.com/#pricing">Pricing</a>
+             <a href="https://photodaterescue.com/#guides">Guides</a>
+             <a href="https://photodaterescue.com/#faq">FAQ</a>
+             <a href="https://photodaterescue.com/#partners">Affiliates</a>
+             <a href="https://photodaterescue.com/#support">Support</a>
+           </nav>
+           <div className="nav-cta">
+             <a className="btn btn-outline" href="https://photodaterescue.com/#pricing">Get desktop app</a>
+           </div>
+         </div>
+       </header>
+     );
+   }
+
+   // SharedFooter.tsx
+   export function SharedFooter() {
+     return (
+       <footer className="site-footer">
+         <div className="footer-inner">
+           <p>&copy; 2025 Photo Date Rescue. All rights reserved.</p>
+           <nav className="footer-nav">
+             <a href="https://photodaterescue.com">Homepage</a>
+             <span>&middot;</span>
+             <a href="https://photodaterescue.com/#how-it-works">How it works</a>
+             <span>&middot;</span>
+             <a href="https://photodaterescue.com/#pricing">Pricing</a>
+             <span>&middot;</span>
+             <a href="https://photodaterescue.com/#guides">Guides</a>
+             <span>&middot;</span>
+             <a href="https://photodaterescue.com/#faq">FAQ</a>
+             <span>&middot;</span>
+             <a href="https://photodaterescue.com/#partners">Affiliates</a>
+           </nav>
+         </div>
+       </footer>
+     );
+   }
+
+================================================================================
+END OF EXPORT
+================================================================================
