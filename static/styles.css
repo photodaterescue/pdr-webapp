@@ -318,6 +318,32 @@ section#pricing {
     margin-top: 48px;
 }
 
+/* Footer logo link */
+.footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.footer-logo-img {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.footer-logo-text {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text-soft);
+    transition: color 0.2s ease;
+}
+
+.footer-logo:hover .footer-logo-text {
+    color: var(--lavender-deep);
+}
+
 /* ========================================================= */
 /* Header/Footer Responsive                                  */
 /* ========================================================= */
