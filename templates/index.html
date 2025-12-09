@@ -641,9 +641,12 @@ No duplicates were removed from this ZIP.
             }
         });
 
-        xhr.addEventListener('error', () => showError('Network error occurred'));
+        xhr.addEventListener('error', () => showError('Network error — the connection was interrupted. Try a smaller ZIP file (under 50MB).'));
+        xhr.addEventListener('timeout', () => showError('Upload timed out — the file may be too large for the web version. Try a smaller ZIP.'));
+        xhr.addEventListener('abort', () => showError('Upload was cancelled.'));
 
         xhr.open('POST', '/upload');
+        xhr.timeout = 600000; // 10 minute timeout
         xhr.responseType = 'blob';
         xhr.send(formData);
     });
