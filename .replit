@@ -36,4 +36,4 @@ externalPort = 80
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["bash", "-c", "gunicorn --bind 0.0.0.0:$PORT app:app"]
+run = ["bash", "-c", "gunicorn --bind 0.0.0.0:$PORT --timeout 300 --workers 2 --worker-class sync --max-requests 100 --max-requests-jitter 10 app:app"]
