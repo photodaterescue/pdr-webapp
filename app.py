@@ -197,14 +197,18 @@ def set_exif_datetime(image_path, timestamp):
     Force-write EXIF timestamps even for images that have NO EXIF block
     (e.g., WhatsApp, Messenger, screenshots, edited images).
     """
-    from PIL import Image
-    import piexif
-
     dt = datetime.fromtimestamp(timestamp)
     dt_str = dt.strftime('%Y:%m:%d %H:%M:%S')
 
     try:
         img = Image.open(image_path)
+        
+        # Only process actual JPEG images
+        if img.format not in ('JPEG', 'MPO'):
+            img.close()
+            # Just update filesystem timestamps for non-JPEG
+            os.utime(image_path, (timestamp, timestamp))
+            return True
 
         # Try loading existing EXIF; if missing, create a new structure
         try:
@@ -219,24 +223,34 @@ def set_exif_datetime(image_path, timestamp):
             }
 
         # Preserve orientation if it exists
+        orientation = None
         if "0th" in exif_dict and piexif.ImageIFD.Orientation in exif_dict["0th"]:
             orientation = exif_dict["0th"][piexif.ImageIFD.Orientation]
-        else:
-            orientation = None
+
+        # Create a clean EXIF structure with only essential tags
+        # This avoids issues with malformed tags from various sources
+        clean_exif = {
+            "0th": {},
+            "Exif": {},
+            "GPS": {},
+            "1st": {},
+            "thumbnail": None
+        }
 
         # Write timestamps
-        exif_dict["Exif"][piexif.ExifIFD.DateTimeOriginal] = dt_str.encode("utf-8")
-        exif_dict["Exif"][piexif.ExifIFD.DateTimeDigitized] = dt_str.encode("utf-8")
-        exif_dict["0th"][piexif.ImageIFD.DateTime] = dt_str.encode("utf-8")
+        clean_exif["Exif"][piexif.ExifIFD.DateTimeOriginal] = dt_str.encode("utf-8")
+        clean_exif["Exif"][piexif.ExifIFD.DateTimeDigitized] = dt_str.encode("utf-8")
+        clean_exif["0th"][piexif.ImageIFD.DateTime] = dt_str.encode("utf-8")
 
         # Restore orientation if it existed
-        if orientation:
-            exif_dict["0th"][piexif.ImageIFD.Orientation] = orientation
+        if orientation is not None:
+            clean_exif["0th"][piexif.ImageIFD.Orientation] = orientation
 
-        exif_bytes = piexif.dump(exif_dict)
+        exif_bytes = piexif.dump(clean_exif)
 
         # Save JPEG with EXIF block inserted
         img.save(image_path, "jpeg", exif=exif_bytes, quality=95)
+        img.close()
 
         # Also update filesystem timestamps
         os.utime(image_path, (timestamp, timestamp))
@@ -245,6 +259,11 @@ def set_exif_datetime(image_path, timestamp):
 
     except Exception as e:
         print(f"Error injecting EXIF into {image_path}: {e}")
+        # Still try to update filesystem timestamps as fallback
+        try:
+            os.utime(image_path, (timestamp, timestamp))
+        except:
+            pass
         return False
 
 

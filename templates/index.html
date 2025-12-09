@@ -689,18 +689,12 @@ No duplicates were removed from this ZIP.
 
         const dupCount = parseInt(duplicatesRemoved || "0", 10);
 
-        if (dupCount > 0) {
+        if (dupCount > 0 && duplicateSummaryContainer) {
             duplicateSummaryContainer.style.display = 'block';
-            duplicateCountLabel.textContent = dupCount.toString();
-
-            duplicateListEl.textContent =
-                "A full report is included inside your ZIP (duplicates_report.txt).";
-
-            if (duplicateNote) {
-                duplicateNote.textContent =
-                    "Duplicates were removed safely using exact matching. The preferred version was kept.";
+            if (duplicateCountLabel) {
+                duplicateCountLabel.textContent = dupCount.toString();
             }
-        } else {
+        } else if (duplicateSummaryContainer) {
             duplicateSummaryContainer.style.display = 'none';
         }
     }
