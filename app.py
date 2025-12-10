@@ -14,8 +14,8 @@ from PIL import Image
 import hashlib  # NEW: for duplicate detection
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-# 100MB max request size for free web version
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
+# 200MB max request size for free web version
+app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024
 app.config['SECRET_KEY'] = os.environ.get('SESSION_SECRET', 'dev-secret-key')
 
 UPLOAD_FOLDER = tempfile.gettempdir()
@@ -599,8 +599,8 @@ def upload_file():
         if not allowed_file(file.filename):
             return jsonify({'error': 'Only ZIP files are allowed'}), 400
 
-        # Enforce 100MB limit for free web version
-        MAX_WEB_SIZE = 100 * 1024 * 1024  # 100MB
+        # Enforce 200MB limit for free web version
+        MAX_WEB_SIZE = 200 * 1024 * 1024  # 200MB
 
         file.seek(0, os.SEEK_END)
         size = file.tell()
@@ -608,7 +608,7 @@ def upload_file():
 
         if size > MAX_WEB_SIZE:
             cleanup_temp_dirs(temp_dirs)
-            return jsonify({'error': 'This free web version supports ZIP files up to 100MB.'}), 400
+            return jsonify({'error': 'This free web version supports ZIP files up to 200MB.'}), 400
 
         upload_dir = tempfile.mkdtemp(prefix='upload_')
         temp_dirs.append(upload_dir)

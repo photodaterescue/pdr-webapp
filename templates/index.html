@@ -80,7 +80,7 @@
                     <div class="dropzone-icon">⬆️</div>
                     <h3 class="dropzone-title">Drop your ZIP file here</h3>
                     <p class="dropzone-subtitle">or click to browse</p>
-                    <p class="dropzone-meta">Maximum file size: 100MB</p>
+                    <p class="dropzone-meta">Maximum file size: 200MB</p>
                 </div>
                 <input type="file" id="fileInput" accept=".zip" hidden />
             </div>
@@ -317,12 +317,12 @@
         <p class="plan-price">$0</p>
         <p class="plan-period">Web preview only</p>
         <ul class="plan-features">
-          <li>Fix ZIPs up to 100&nbsp;MB in-browser.</li>
+          <li>Fix ZIPs up to 200&nbsp;MB in-browser.</li>
           <li>Instant preview of corrected dates.</li>
           <li>Works with Google Takeout / iCloud / WhatsApp exports.</li>
           <li>No install required.</li>
           <li>Files processed in temporary storage only, then deleted.</li>
-          <li><strong>ZIP files only</strong> (up to 100&nbsp;MB).</li>
+          <li><strong>ZIP files only</strong> (up to 200&nbsp;MB).</li>
         </ul>
         <a
           class="btn btn-primary btn-card"
@@ -400,7 +400,7 @@
     </div>
 
     <p class="hero-footnote">
-      Web demo: ZIPs up to 100&nbsp;MB. Desktop app: unlimited folders,
+      Web demo: ZIPs up to 200&nbsp;MB. Desktop app: unlimited folders,
       ZIPs and devices.
     </p>
   </div>
@@ -542,12 +542,12 @@ No duplicates were removed from this ZIP.
 
 
     // =======================
-    // UPLOAD 100MB ZIP LIMIT (front-end)
+    // UPLOAD 200MB ZIP LIMIT (front-end)
     // =======================
         function checkZipLimit(file) {
-            const MAX_MB = 100;
+            const MAX_MB = 200;
             if (file.size > MAX_MB * 1024 * 1024) {
-                showError("❌ This free web version supports ZIP files up to 100MB.<br>Your file is too large.");
+                showError("❌ This free web version supports ZIP files up to 200MB.<br>Your file is too large.");
                 return false;
             }
             return true;
@@ -561,10 +561,10 @@ No duplicates were removed from this ZIP.
     uploadBtn.addEventListener('click', () => {
         if (!selectedFile) return;
 
-        // Align with 100MB front-end rule
-        const MAX_MB = 100;
+        // Align with 200MB front-end rule
+        const MAX_MB = 200;
         if (selectedFile.size > MAX_MB * 1024 * 1024) {
-            showError('This free web version supports ZIP files up to 100MB.');
+            showError('This free web version supports ZIP files up to 200MB.');
             return;
         }
 
