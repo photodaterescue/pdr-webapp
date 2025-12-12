@@ -219,6 +219,26 @@ body {
     color: var(--lavender-deep);
 }
 
+.footer-legal {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    justify-content: center;
+}
+.footer-legal a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+.footer-legal a:hover {
+    color: var(--lavender-deep);
+}
+.footer-legal span {
+    color: var(--text-soft);
+    opacity: 0.5;
+}
+
 /* ========================================================= */
 /* Webapp Content Wrapper                                    */
 /* ========================================================= */
