@@ -553,7 +553,7 @@ No duplicates were removed from this ZIP.
             const MAX_MB = 200;
             if (file.size > MAX_MB * 1024 * 1024) {
                 showError(
-                    "The web demo supports ZIPs up to 200 MB.<br>Your upload was too large — please reduce the ZIP size or try a smaller folder.",
+                    "The web demo supports ZIPs up to 200 MB.<br>Your upload was too large — please reduce the ZIP size.",
                     "For large libraries, use the <strong>Desktop Version</strong> (supports unlimited size)."
                 );
                 return false;
@@ -573,7 +573,7 @@ No duplicates were removed from this ZIP.
         const MAX_MB = 200;
         if (selectedFile.size > MAX_MB * 1024 * 1024) {
             showError(
-                "The web demo supports ZIPs up to 200 MB.<br>Your upload was too large — please reduce the ZIP size or try a smaller folder.",
+                "The web demo supports ZIPs up to 200 MB.<br>Your upload was too large — please reduce the ZIP size.",
                 "For large libraries, use the <strong>Desktop Version</strong> (supports unlimited size)."
             );
             return;

@@ -1,0 +1,8 @@
+[deploy]
+startCommand = "gunicorn app:app --timeout 600"
+
+[env]
+RAILWAY_ENVIRONMENT = "production"
+
+[service]
+max_request_body_size = "500mb"
