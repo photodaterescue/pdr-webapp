@@ -202,7 +202,13 @@
                 <p><strong>Duplicates removed:</strong> <span id="duplicatesRemoved"></span></p>
             </div>
 
-            <!-- Duplicate summary (Option 1 UI) -->
+            <!-- Skipped files notice -->
+<div id="skippedFilesNotice" class="notice-card notice-info" style="display:none; margin-top:18px;">
+    <p class="notice-title">Some files were skipped</p>
+    <p class="notice-text">This demo processes photos only. Videos and documents remain unchanged in your original ZIP.</p>
+</div>
+
+<!-- Duplicate summary (Option 1 UI) -->
 <div id="duplicateSummaryContainer" class="info-card duplicate-summary-card" style="display:none; margin-top:18px;">
     <div class="duplicate-summary-header">
         <div>
@@ -239,12 +245,11 @@
         <!-- ========================= -->
         <!-- 5. Error Section          -->
         <!-- ========================= -->
-        <section id="error-section" class="card" style="display:none; background:#ffecec; border:1px solid #ffbfbf;">
-            <h2 style="color:#b40000;">Error</h2>
-            <p id="errorMessage" style="color:#8c0000; margin-top:8px;"></p>
-            <button id="errorResetBtn"
-                    class="btn-primary"
-                    style="width:100%; margin-top:18px; background:#d43131;">
+        <section id="error-section" class="card error-card" style="display:none;">
+            <p class="error-title" id="errorTitle">We couldn't process this file</p>
+            <p class="error-message" id="errorMessage"></p>
+            <p class="error-hint" id="errorHint" style="display:none;"></p>
+            <button id="errorResetBtn" class="btn-primary error-btn">
                 Try Again
             </button>
         </section>
@@ -547,7 +552,10 @@ No duplicates were removed from this ZIP.
         function checkZipLimit(file) {
             const MAX_MB = 200;
             if (file.size > MAX_MB * 1024 * 1024) {
-                showError("❌ This free web version supports ZIP files up to 200MB.<br>Your file is too large.");
+                showError(
+                    "The web demo supports ZIPs up to 200 MB.<br>Your upload was too large — please reduce the ZIP size or try a smaller folder.",
+                    "For large libraries, use the <strong>Desktop Version</strong> (supports unlimited size)."
+                );
                 return false;
             }
             return true;
@@ -564,7 +572,10 @@ No duplicates were removed from this ZIP.
         // Align with 200MB front-end rule
         const MAX_MB = 200;
         if (selectedFile.size > MAX_MB * 1024 * 1024) {
-            showError('This free web version supports ZIP files up to 200MB.');
+            showError(
+                "The web demo supports ZIPs up to 200 MB.<br>Your upload was too large — please reduce the ZIP size or try a smaller folder.",
+                "For large libraries, use the <strong>Desktop Version</strong> (supports unlimited size)."
+            );
             return;
         }
 
@@ -691,6 +702,15 @@ No duplicates were removed from this ZIP.
         document.getElementById('duplicatesRemoved').textContent = duplicatesRemoved || '0';
 
         const dupCount = parseInt(duplicatesRemoved || "0", 10);
+        const skippedCount = parseInt(skipped || "0", 10);
+
+        // Show skipped files notice if any files were skipped
+        const skippedNotice = document.getElementById('skippedFilesNotice');
+        if (skippedCount > 0 && skippedNotice) {
+            skippedNotice.style.display = 'block';
+        } else if (skippedNotice) {
+            skippedNotice.style.display = 'none';
+        }
 
         if (dupCount > 0 && duplicateSummaryContainer) {
             duplicateSummaryContainer.style.display = 'block';
@@ -706,8 +726,20 @@ No duplicates were removed from this ZIP.
     // =======================
     // ERROR SCREEN
     // =======================
-    function showError(msg) {
-        document.getElementById('errorMessage').textContent = msg || 'Unknown error';
+    function showError(msg, hint) {
+        const errorTitle = document.getElementById('errorTitle');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorHint = document.getElementById('errorHint');
+        
+        errorMessage.innerHTML = msg || 'Unknown error';
+        
+        if (hint) {
+            errorHint.innerHTML = hint;
+            errorHint.style.display = 'block';
+        } else {
+            errorHint.style.display = 'none';
+        }
+        
         showSection('error');
     }
 

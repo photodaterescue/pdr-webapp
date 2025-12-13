@@ -866,6 +866,78 @@ p {
     color: #22213a;
 }
 
+/* ========================================================= */
+/* Notice Cards (Skipped Files, Warnings)                    */
+/* ========================================================= */
+
+.notice-card {
+    border-radius: 14px;
+    padding: 18px 22px;
+    text-align: center;
+}
+
+.notice-info {
+    background: #f8f7fc;
+    border: 1px solid #e4e1f0;
+}
+
+.notice-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+}
+
+.notice-text {
+    font-size: 0.88rem;
+    color: var(--text-soft);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ========================================================= */
+/* Error Card (Premium Style)                                */
+/* ========================================================= */
+
+.error-card {
+    background: #fffbfa;
+    border: 1px solid #f0e0dd;
+    text-align: center;
+    padding: 32px 28px;
+}
+
+.error-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #5a4a48;
+    margin: 0 0 12px;
+}
+
+.error-message {
+    font-size: 0.95rem;
+    color: #6b5a58;
+    margin: 0 0 10px;
+    line-height: 1.6;
+}
+
+.error-hint {
+    font-size: 0.88rem;
+    color: var(--text-soft);
+    margin: 0 0 18px;
+    padding-top: 10px;
+    border-top: 1px solid #f0e8e6;
+}
+
+.error-btn {
+    width: 100%;
+    margin-top: 8px;
+    background: linear-gradient(90deg, #c9a0a0, #b08888) !important;
+}
+
+.error-btn:hover {
+    background: linear-gradient(90deg, #b89090, #a07878) !important;
+}
+
 /* 9.2 Ordered list (“How it works”) */
 .how-list {
     padding-left: 18px;
