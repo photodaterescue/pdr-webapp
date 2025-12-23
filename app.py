@@ -710,8 +710,10 @@ def support_form():
     """Handle support form submissions from the main website."""
     try:
         data = request.get_json()
+        print(f"[/api/support] Incoming request JSON: {data}")
         
         if not data:
+            print("[/api/support] Error: No JSON data provided")
             return jsonify({'error': 'No JSON data provided'}), 400
         
         name = data.get('name', '').strip()
@@ -720,12 +722,15 @@ def support_form():
         message = data.get('message', '').strip()
         
         if not email:
+            print("[/api/support] Error: Email is required")
             return jsonify({'error': 'Email is required'}), 400
         if not message:
+            print("[/api/support] Error: Message is required")
             return jsonify({'error': 'Message is required'}), 400
         
         resend_api_key = os.environ.get('RESEND_API_KEY')
         if not resend_api_key:
+            print("[/api/support] Error: RESEND_API_KEY not configured")
             return jsonify({'error': 'Email service not configured'}), 500
         
         email_subject = f"Support: {subject}" if subject else "Support Request"
@@ -739,33 +744,42 @@ Message:
 {message}
 """
         
+        resend_payload = {
+            'from': 'Photo Date Rescue <admin@photodaterescue.com>',
+            'to': ['admin@photodaterescue.com'],
+            'reply_to': email,
+            'subject': email_subject,
+            'text': email_body
+        }
+        print(f"[/api/support] Resend payload: {resend_payload}")
+        
         response = requests.post(
             'https://api.resend.com/emails',
             headers={
                 'Authorization': f'Bearer {resend_api_key}',
                 'Content-Type': 'application/json'
             },
-            json={
-                'from': 'Photo Date Rescue <admin@photodaterescue.com>',
-                'to': ['admin@photodaterescue.com'],
-                'reply_to': email,
-                'subject': email_subject,
-                'text': email_body
-            },
+            json=resend_payload,
             timeout=30
         )
+        
+        print(f"[/api/support] Resend response status: {response.status_code}")
+        print(f"[/api/support] Resend response body: {response.text}")
         
         if response.status_code == 200 or response.status_code == 201:
             return jsonify({'success': True, 'message': 'Support request sent successfully'}), 200
         else:
             return jsonify({'error': 'Failed to send email'}), 500
             
-    except requests.exceptions.Timeout:
+    except requests.exceptions.Timeout as e:
+        print(f"[/api/support] Exception (Timeout): {e}")
         return jsonify({'error': 'Email service timeout'}), 500
     except requests.exceptions.RequestException as e:
+        print(f"[/api/support] Exception (RequestException): {e}")
         return jsonify({'error': 'Email service error'}), 500
     except Exception as e:
-        return jsonify({'error': 'Server error'}), 500
+        print(f"[/api/support] Exception (General): {e}")
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':
