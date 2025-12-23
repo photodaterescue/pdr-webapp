@@ -769,7 +769,13 @@ Message:
         if response.status_code == 200 or response.status_code == 201:
             return jsonify({'success': True, 'message': 'Support request sent successfully'}), 200
         else:
-            return jsonify({'error': 'Failed to send email'}), 500
+            try:
+                resend_error = response.json()
+                error_msg = resend_error.get('message', 'Failed to send email')
+            except:
+                error_msg = f"Resend API error (status {response.status_code})"
+            print(f"[/api/support] Resend error: {error_msg}")
+            return jsonify({'error': error_msg}), 500
             
     except requests.exceptions.Timeout as e:
         print(f"[/api/support] Exception (Timeout): {e}")
