@@ -8,12 +8,26 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import piexif
 from PIL import Image
-import hashlib  # NEW: for duplicate detection
+import hashlib
+import requests
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+
+# CORS configuration for support API
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "https://www.photodaterescue.com",
+            "https://photodaterescue.com"
+        ],
+        "methods": ["POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 # 200MB max request size for free web version
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024
 app.config['SECRET_KEY'] = os.environ.get('SESSION_SECRET', 'dev-secret-key')
@@ -689,6 +703,69 @@ def upload_file():
     except Exception as e:
         cleanup_temp_dirs(temp_dirs)
         return jsonify({'error': f'Processing error: {str(e)}'}), 500
+
+
+@app.route('/api/support', methods=['POST'])
+def support_form():
+    """Handle support form submissions from the main website."""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'No JSON data provided'}), 400
+        
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+        subject = data.get('subject', '').strip()
+        message = data.get('message', '').strip()
+        
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+        if not message:
+            return jsonify({'error': 'Message is required'}), 400
+        
+        resend_api_key = os.environ.get('RESEND_API_KEY')
+        if not resend_api_key:
+            return jsonify({'error': 'Email service not configured'}), 500
+        
+        email_subject = f"Support: {subject}" if subject else "Support Request"
+        email_body = f"""New support request from Photo Date Rescue website:
+
+Name: {name or 'Not provided'}
+Email: {email}
+Subject: {subject or 'Not provided'}
+
+Message:
+{message}
+"""
+        
+        response = requests.post(
+            'https://api.resend.com/emails',
+            headers={
+                'Authorization': f'Bearer {resend_api_key}',
+                'Content-Type': 'application/json'
+            },
+            json={
+                'from': 'Photo Date Rescue <support@photodaterescue.com>',
+                'to': ['support@photodaterescue.com'],
+                'reply_to': email,
+                'subject': email_subject,
+                'text': email_body
+            },
+            timeout=30
+        )
+        
+        if response.status_code == 200 or response.status_code == 201:
+            return jsonify({'success': True, 'message': 'Support request sent successfully'}), 200
+        else:
+            return jsonify({'error': 'Failed to send email'}), 500
+            
+    except requests.exceptions.Timeout:
+        return jsonify({'error': 'Email service timeout'}), 500
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': 'Email service error'}), 500
+    except Exception as e:
+        return jsonify({'error': 'Server error'}), 500
 
 
 if __name__ == '__main__':
