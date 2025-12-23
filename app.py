@@ -746,8 +746,8 @@ Message:
                 'Content-Type': 'application/json'
             },
             json={
-                'from': 'Photo Date Rescue <support@photodaterescue.com>',
-                'to': ['support@photodaterescue.com'],
+                'from': 'Photo Date Rescue <admin@photodaterescue.com>',
+                'to': ['admin@photodaterescue.com'],
                 'reply_to': email,
                 'subject': email_subject,
                 'text': email_body
