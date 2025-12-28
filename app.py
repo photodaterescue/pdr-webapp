@@ -788,6 +788,113 @@ Message:
         return jsonify({'error': str(e)}), 500
 
 
+def send_form_email(form_type, data):
+    """Shared email sending function for all form types."""
+    print(f"[/api/{form_type}] Incoming request JSON: {data}")
+    
+    if not data:
+        print(f"[/api/{form_type}] Error: No JSON data provided")
+        return jsonify({'error': 'No JSON data provided'}), 400
+    
+    name = data.get('name', '').strip()
+    email = data.get('email', '').strip()
+    company = data.get('company', '').strip()
+    message = data.get('message', '').strip()
+    
+    if not email:
+        print(f"[/api/{form_type}] Error: Email is required")
+        return jsonify({'error': 'Email is required'}), 400
+    if not message:
+        print(f"[/api/{form_type}] Error: Message is required")
+        return jsonify({'error': 'Message is required'}), 400
+    
+    resend_api_key = os.environ.get('RESEND_API_KEY')
+    if not resend_api_key:
+        print(f"[/api/{form_type}] Error: RESEND_API_KEY not configured")
+        return jsonify({'error': 'Email service not configured'}), 500
+    
+    form_label = form_type.capitalize()
+    email_subject = f"{form_label} Inquiry from {name or email}"
+    email_body = f"""New {form_label.lower()} inquiry from Photo Date Rescue website:
+
+Name: {name or 'Not provided'}
+Email: {email}
+Company: {company or 'Not provided'}
+
+Message:
+{message}
+"""
+    
+    resend_payload = {
+        'from': 'Photo Date Rescue <admin@photodaterescue.com>',
+        'to': ['admin@photodaterescue.com'],
+        'reply_to': email,
+        'subject': email_subject,
+        'text': email_body
+    }
+    print(f"[/api/{form_type}] Resend payload: {resend_payload}")
+    
+    response = requests.post(
+        'https://api.resend.com/emails',
+        headers={
+            'Authorization': f'Bearer {resend_api_key}',
+            'Content-Type': 'application/json'
+        },
+        json=resend_payload,
+        timeout=30
+    )
+    
+    print(f"[/api/{form_type}] Resend response status: {response.status_code}")
+    print(f"[/api/{form_type}] Resend response body: {response.text}")
+    
+    if response.status_code == 200 or response.status_code == 201:
+        return jsonify({'success': True, 'message': f'{form_label} inquiry sent successfully'}), 200
+    else:
+        try:
+            resend_error = response.json()
+            error_msg = resend_error.get('message', 'Failed to send email')
+        except:
+            error_msg = f"Resend API error (status {response.status_code})"
+        print(f"[/api/{form_type}] Resend error: {error_msg}")
+        return jsonify({'error': error_msg}), 500
+
+
+@app.route('/api/affiliate', methods=['POST'])
+def affiliate_form():
+    """Handle affiliate form submissions from the main website."""
+    print("[/api/affiliate] Handler reached")
+    try:
+        data = request.get_json()
+        return send_form_email('affiliate', data)
+    except requests.exceptions.Timeout as e:
+        print(f"[/api/affiliate] Exception (Timeout): {e}")
+        return jsonify({'error': 'Email service timeout'}), 500
+    except requests.exceptions.RequestException as e:
+        print(f"[/api/affiliate] Exception (RequestException): {e}")
+        return jsonify({'error': 'Email service error'}), 500
+    except Exception as e:
+        print(f"[/api/affiliate] Exception (General): {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/partner', methods=['POST'])
+def partner_form():
+    """Handle partner form submissions from the main website."""
+    print("[/api/partner] Handler reached")
+    try:
+        data = request.get_json()
+        return send_form_email('partner', data)
+    except requests.exceptions.Timeout as e:
+        print(f"[/api/partner] Exception (Timeout): {e}")
+        return jsonify({'error': 'Email service timeout'}), 500
+    except requests.exceptions.RequestException as e:
+        print(f"[/api/partner] Exception (RequestException): {e}")
+        return jsonify({'error': 'Email service error'}), 500
+    except Exception as e:
+        print(f"[/api/partner] Exception (General): {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
